@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:glowtap/navigation/bottom_custglow.dart';
+import 'package:glowtap/glowtap/database/history_service.dart';
 import 'package:glowtap/glowtap/model/splash_custglow.dart';
-import 'package:glowtap/glowtap/view_customer/homepage.dart';
-import 'package:glowtap/glowtap/view_customer/loginpage.dart';
-import 'package:glowtap/glowtap/view_customer/registerpage.dart';
+import 'package:glowtap/navigation/bottom_custglow.dart';
 
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await HistoryService.loadHistory();
   runApp(const MyApp());
 }
 
@@ -19,6 +19,10 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
+        fontFamily: "Poppins",
+        scaffoldBackgroundColor: const Color(0xFFFCEDE9),
+        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFFE8A8A1)),
+        useMaterial3: true,
         // This is the theme of your application.
         //
         // TRY THIS: Try running your application with "flutter run". You'll see
@@ -34,9 +38,9 @@ class MyApp extends StatelessWidget {
         //
         // This works for code too, not just values: Most code changes can be
         // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        // colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: Bottom_CustGlow(),
+      home: SplashCustglow(),
     );
   }
 }
