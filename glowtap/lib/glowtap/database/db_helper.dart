@@ -4,6 +4,8 @@ import 'package:path/path.dart';
 
 class DbHelper {
   static const tableCustomer = 'Customer';
+  static const tableHistory = 'History';
+
   static Future<Database> db() async {
     final dbPath = await getDatabasesPath();
     return openDatabase(
@@ -12,20 +14,24 @@ class DbHelper {
         await db.execute(
           "CREATE TABLE $tableCustomer(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, email TEXT, phone TEXT, city TEXT, password TEXT)",
         );
+
+        await db.execute(
+          "CREATE TABLE $tableHistory(id INTEGER PRIMARY KEY AUTOINCREMENT, treatment TEXT, date TEXT, status TEXT)",
+        );
       },
-      version: 1,
+      version: 2,
     );
   }
 
+  // ========== CUSTOMER CRUD ==========
+
   static Future<void> registerUser(CustomerModel user) async {
     final dbs = await db();
-    //Insert adalah fungsi untuk menambahkan data (CREATE)
     await dbs.insert(
       tableCustomer,
       user.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
-    print(user.toMap());
   }
 
   static Future<CustomerModel?> loginUser({
@@ -33,7 +39,6 @@ class DbHelper {
     required String password,
   }) async {
     final dbs = await db();
-    //query adalah fungsi untuk menampilkan data (READ)
     final List<Map<String, dynamic>> results = await dbs.query(
       tableCustomer,
       where: 'email = ? AND password = ?',
@@ -45,18 +50,14 @@ class DbHelper {
     return null;
   }
 
-  //GET CUSTOMER
   static Future<List<CustomerModel>> getAllCustomer() async {
     final dbs = await db();
-    final List<Map<String, dynamic>> results = await dbs.query(tableCustomer);
-    print(results.map((e) => CustomerModel.fromMap(e)).toList());
+    final results = await dbs.query(tableCustomer);
     return results.map((e) => CustomerModel.fromMap(e)).toList();
   }
 
-  //UPDATE DATA
   static Future<void> updateCustomer(CustomerModel customer) async {
     final dbs = await db();
-    //Insert adalah fungsi untuk menambahkan data (CREATE)
     await dbs.update(
       tableCustomer,
       customer.toMap(),
@@ -64,13 +65,45 @@ class DbHelper {
       whereArgs: [customer.id],
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
-    print(customer.toMap());
   }
 
-  //DELETE DATA
   static Future<void> deleteCustomer(int id) async {
     final dbs = await db();
-    //Insert adalah fungsi untuk menambahkan data (CREATE)
     await dbs.delete(tableCustomer, where: "id = ?", whereArgs: [id]);
+  }
+
+  // ========== HISTORY CRUD ==========
+
+  static Future<int> addHistory({
+    required String treatment,
+    required String date,
+    required String status,
+  }) async {
+    final dbs = await db();
+    return await dbs.insert(tableHistory, {
+      'treatment': treatment,
+      'date': date,
+      'status': status,
+    }, conflictAlgorithm: ConflictAlgorithm.replace);
+  }
+
+  static Future<List<Map<String, dynamic>>> getHistory() async {
+    final dbs = await db();
+    return await dbs.query(tableHistory, orderBy: "id DESC");
+  }
+
+  static Future<int> updateHistoryStatus(int id, String status) async {
+    final dbs = await db();
+    return await dbs.update(
+      tableHistory,
+      {'status': status},
+      where: "id = ?",
+      whereArgs: [id],
+    );
+  }
+
+  static Future<int> deleteHistory(int id) async {
+    final dbs = await db();
+    return await dbs.delete(tableHistory, where: "id = ?", whereArgs: [id]);
   }
 }

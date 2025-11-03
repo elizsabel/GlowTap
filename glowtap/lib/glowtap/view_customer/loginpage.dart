@@ -34,7 +34,7 @@ class _LoginCustGlowState extends State<LoginCustGlow> {
       body: Stack(
         children: [
           buildBackground(), // Background Image
-          buildLoginForm(),  // Layer Box Login
+          buildLoginForm(), // Layer Box Login
         ],
       ),
     );
@@ -43,9 +43,6 @@ class _LoginCustGlowState extends State<LoginCustGlow> {
   // ====================== LOGIN PROCESS ======================
   login() async {
     if (_formKey.currentState!.validate()) {
-      // Simpan status login
-      PreferenceHandler.saveLogin(true);
-
       // Cek ke database
       final data = await DbHelper.loginUser(
         email: emailController.text,
@@ -53,6 +50,10 @@ class _LoginCustGlowState extends State<LoginCustGlow> {
       );
 
       if (data != null) {
+        // Simpan status login & data user
+        await PreferenceHandler.saveLogin(true);
+        await PreferenceHandler.saveUser(data);
+
         // Jika berhasil login pindah ke home (Bottom Navigation)
         Navigator.pushReplacement(
           context,
@@ -71,7 +72,12 @@ class _LoginCustGlowState extends State<LoginCustGlow> {
       child: Form(
         key: _formKey,
         child: Padding(
-          padding: const EdgeInsets.only(right: 20, left: 20, bottom: 30, top: 250),
+          padding: const EdgeInsets.only(
+            right: 20,
+            left: 20,
+            bottom: 30,
+            top: 250,
+          ),
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             decoration: BoxDecoration(
@@ -108,7 +114,10 @@ class _LoginCustGlowState extends State<LoginCustGlow> {
                 // ====================== EMAIL FIELD ======================
                 buildTextField(
                   hintText: "Masukkan email",
-                  icon: Icon(Icons.email_outlined, color: Appcolor.textBrownSoft),
+                  icon: Icon(
+                    Icons.email_outlined,
+                    color: Appcolor.textBrownSoft,
+                  ),
                   controller: emailController,
                   validator: (value) {
                     if (value!.isEmpty) return "Email tidak boleh kosong";
@@ -138,16 +147,16 @@ class _LoginCustGlowState extends State<LoginCustGlow> {
                     onPressed: () {},
                     child: Text(
                       "Lupa Password?",
-                      style: TextStyle(color: Appcolor.rosegoldDark, fontSize: 12),
+                      style: TextStyle(
+                        color: Appcolor.rosegoldDark,
+                        fontSize: 12,
+                      ),
                     ),
                   ),
                 ),
 
                 // ================== LOGIN BUTTON ==================
-                LoginButton(
-                  text: "Masuk",
-                  onPressed: login,
-                ),
+                LoginButton(text: "Masuk", onPressed: login),
                 height(10),
 
                 Row(
@@ -211,7 +220,9 @@ class _LoginCustGlowState extends State<LoginCustGlow> {
         suffixIcon: isPassword
             ? IconButton(
                 onPressed: () => setState(() => isVisibility = !isVisibility),
-                icon: Icon(isVisibility ? Icons.visibility : Icons.visibility_off),
+                icon: Icon(
+                  isVisibility ? Icons.visibility : Icons.visibility_off,
+                ),
               )
             : null,
       ),
@@ -240,7 +251,13 @@ class LoginButton extends StatelessWidget {
           backgroundColor: Appcolor.button1,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         ),
-        child: Text(text, style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
+        child: Text(
+          text,
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
       ),
     );
   }

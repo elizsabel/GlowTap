@@ -64,8 +64,8 @@ class _SplashCustglowState extends State<SplashCustglow> {
             /// LOGO / IMAGE SPLASH
             Image.asset(
               AppImage.splashimage,
-              width: 160,
-              height: 160,
+              width: 300,
+              height: 300,
             ),
             const SizedBox(height: 18),
 

@@ -34,7 +34,7 @@ class CustomerModel {
   /// Mengubah data Map (dari database) menjadi object CustomerModel.
   factory CustomerModel.fromMap(Map<String, dynamic> map) {
     return CustomerModel(
-      id: map['id'],                 // tidak perlu cek null, database akan otomatis generate
+      id: map['id'],                 
       name: map['name'],
       email: map['email'],
       phone: map['phone'],
