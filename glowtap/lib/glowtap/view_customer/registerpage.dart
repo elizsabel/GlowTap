@@ -18,7 +18,6 @@ class _RegisterCustGlowState extends State<RegisterCustglow> {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
-  final TextEditingController cityController = TextEditingController();
 
   // Untuk visibility input password
   bool isVisibility = false;
@@ -127,18 +126,6 @@ class _RegisterCustGlowState extends State<RegisterCustglow> {
                         value!.length < 6 ? "Minimal 6 karakter" : null,
                   ),
 
-                  SizedBox(height: 14),
-
-                  // Input Alamat
-                  buildTitle("Alamat Domisili"),
-                  buildTextField(
-                    hintText: "Masukkan alamat kamu",
-                    icon: Icons.location_on_outlined,
-                    controller: cityController,
-                    validator: (value) =>
-                        value!.isEmpty ? "Alamat tidak boleh kosong" : null,
-                  ),
-
                   SizedBox(height: 22),
 
                   // Tombol Register
@@ -182,7 +169,6 @@ class _RegisterCustGlowState extends State<RegisterCustglow> {
         email: emailController.text,
         phone: phoneController.text,
         password: passwordController.text,
-        city: cityController.text,
       );
 
       await DbHelper.registerUser(data);

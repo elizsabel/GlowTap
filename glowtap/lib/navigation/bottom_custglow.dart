@@ -1,63 +1,56 @@
-import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:glowtap/constant/appcolor.dart';
-import 'package:glowtap/glowtap/view_customer/educationpage.dart';
-import 'package:glowtap/glowtap/view_customer/homepage.dart';
-import 'package:glowtap/glowtap/view_customer/akunpage.dart';
-import 'package:glowtap/glowtap/view_customer/trackingpage.dart';
 
-class BottomCustGlow extends StatefulWidget {
-  final int index;
-  const BottomCustGlow({super.key, this.index = 0});
+import 'package:glowtap/glowtap/view_customer/homepage.dart';
+import 'package:glowtap/glowtap/view_customer/riwayatpesananpage.dart';
+import 'package:glowtap/glowtap/view_customer/akunpage.dart';
+
+class BottomNavPage extends StatefulWidget {
+  const BottomNavPage({super.key});
 
   @override
-  State<BottomCustGlow> createState() => _BottomCustGlowState();
+  State<BottomNavPage> createState() => _BottomNavPageState();
 }
 
-class _BottomCustGlowState extends State<BottomCustGlow> {
-  late int _selected; // <- gunakan late agar mengikuti index dari luar
+class _BottomNavPageState extends State<BottomNavPage> {
+  int currentIndex = 0;
 
-  @override
-  void initState() {
-    super.initState();
-    _selected = widget.index; // ✅ ini kuncinya
-  }
-
-  final List<Widget> _pages = [
+  final List<Widget> pages = const [
     HomePage(),
-    TrackingPage(),
-    EdukasiPage(),
-    AkunPage(),
+    RiwayatPesananPage(),
+    //EdukasiPage(),
+    AkunPage()
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Appcolor.softPinkPastel,
-
-      body: AnimatedSwitcher(
-        duration: const Duration(milliseconds: 300),
-        child: _pages[_selected],
-      ),
-
-      bottomNavigationBar: CurvedNavigationBar(
-        index: _selected,
-        height: 60,
-        backgroundColor: Colors.transparent,
-        color: Appcolor.button1,
-        buttonBackgroundColor: Appcolor.button1,
-        animationDuration: const Duration(milliseconds: 250),
-
-        items: [
-          Icon(Icons.home_rounded, size: 28, color: Colors.white),
-          Icon(Icons.map_rounded, size: 28, color: Colors.white),
-          Icon(Icons.article_rounded, size: 28, color: Colors.white),
-          Icon(Icons.person_rounded, size: 28, color: Colors.white),
+      body: pages[currentIndex],
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: currentIndex,
+        onTap: (i) => setState(() => currentIndex = i),
+        selectedItemColor: Appcolor.button1,
+        unselectedItemColor: Appcolor.textBrownSoft.withOpacity(.6),
+        backgroundColor: Colors.white,
+        type: BottomNavigationBarType.fixed,
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home_rounded),
+            label: "Beranda",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.receipt_long_rounded),
+            label: "Riwayat",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.menu_book_rounded),
+            label: "Edukasi",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person_rounded),
+            label: "Akun",
+          ),
         ],
-
-        onTap: (index) {
-          setState(() => _selected = index);
-        },
       ),
     );
   }

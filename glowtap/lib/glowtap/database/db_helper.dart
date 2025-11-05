@@ -1,4 +1,5 @@
 import 'package:glowtap/glowtap/model/customer_model.dart';
+import 'package:glowtap/glowtap/view_customer/journalmodel.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
@@ -6,20 +7,42 @@ class DbHelper {
   static const tableCustomer = 'Customer';
   static const tableHistory = 'History';
 
+  // Mendapatkan database (getter)
   static Future<Database> db() async {
     final dbPath = await getDatabasesPath();
     return openDatabase(
       join(dbPath, 'GlowTap.db'),
-      onCreate: (db, version) async {
-        await db.execute(
-          "CREATE TABLE $tableCustomer(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, email TEXT, phone TEXT, city TEXT, password TEXT)",
-        );
-
-        await db.execute(
-          "CREATE TABLE $tableHistory(id INTEGER PRIMARY KEY AUTOINCREMENT, treatment TEXT, date TEXT, status TEXT)",
-        );
-      },
       version: 2,
+      onCreate: (db, version) async {
+        await db.execute("""
+          CREATE TABLE $tableCustomer(
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT,
+            email TEXT,
+            phone TEXT,
+            password TEXT
+          )
+        """);
+
+        await db.execute("""
+          CREATE TABLE $tableHistory(
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            treatment TEXT,
+            date TEXT,
+            status TEXT
+          )
+        """);
+
+        await db.execute("""
+          CREATE TABLE Journal(
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            date TEXT,
+            note TEXT
+          )
+        """);
+
+        
+      },
     );
   }
 
@@ -38,16 +61,18 @@ class DbHelper {
     required String email,
     required String password,
   }) async {
-    final dbs = await db();
-    final List<Map<String, dynamic>> results = await dbs.query(
-      tableCustomer,
+    final dbs = await db(); // ✅ perbaikan: pakai db()
+    final results = await dbs.query(
+      tableCustomer, // ✅ perbaikan: pakai tabel Customer
       where: 'email = ? AND password = ?',
       whereArgs: [email, password],
     );
+
     if (results.isNotEmpty) {
       return CustomerModel.fromMap(results.first);
+    } else {
+      return null;
     }
-    return null;
   }
 
   static Future<List<CustomerModel>> getAllCustomer() async {
@@ -99,8 +124,39 @@ class DbHelper {
       {'status': status},
       where: "id = ?",
       whereArgs: [id],
+
     );
   }
+
+// ========== JOURNAL CRUD ==========
+
+static Future<int> addJournal(JournalModel journal) async {
+  final dbs = await db();
+  return await dbs.insert('Journal', journal.toMap());
+}
+
+static Future<List<JournalModel>> getJournal() async {
+  final dbs = await db();
+  final res = await dbs.query('Journal', orderBy: "id DESC");
+  return res.map((e) => JournalModel.fromMap(e)).toList();
+}
+
+static Future<int> updateJournal(JournalModel journal) async {
+  final dbs = await db();
+  return await dbs.update(
+    'Journal',
+    journal.toMap(),
+    where: "id = ?",
+    whereArgs: [journal.id],
+  );
+}
+
+static Future<int> deleteJournal(int id) async {
+  final dbs = await db();
+  return await dbs.delete('Journal', where: "id = ?", whereArgs: [id]);
+}
+
+
 
   static Future<int> deleteHistory(int id) async {
     final dbs = await db();

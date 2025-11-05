@@ -8,7 +8,6 @@ class CustomerModel {
   String email;       // Email untuk login
   String phone;       // Nomor handphone
   String password;
-  String city;    // Password akun
 
   CustomerModel({
     this.id,
@@ -16,7 +15,6 @@ class CustomerModel {
     required this.email,
     required this.phone,
     required this.password,
-    required this.city,
   });
 
   /// Mengubah object CustomerModel menjadi Map (format yang dapat disimpan ke database).
@@ -27,7 +25,6 @@ class CustomerModel {
       'phone': phone,
       'email': email,
       'password': password,
-      'city': city,
     };
   }
 
@@ -39,7 +36,6 @@ class CustomerModel {
       email: map['email'],
       phone: map['phone'],
       password: map['password'],
-      city: map['city'],
     );
   }
 

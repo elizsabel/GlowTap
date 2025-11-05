@@ -25,11 +25,9 @@ class DetailTreatmentPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
 
-            // ICON EMOJI
             Text(data["emoji"], style: const TextStyle(fontSize: 78)),
             const SizedBox(height: 16),
 
-            // TITLE
             Text(
               data["title"],
               textAlign: TextAlign.center,
@@ -42,7 +40,6 @@ class DetailTreatmentPage extends StatelessWidget {
 
             const SizedBox(height: 12),
 
-            // DESCRIPTION
             Text(
               data["description"],
               textAlign: TextAlign.center,
@@ -54,7 +51,7 @@ class DetailTreatmentPage extends StatelessWidget {
 
             const SizedBox(height: 30),
 
-            // DETAIL INFO
+            // DETAIL
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(18),
@@ -75,7 +72,7 @@ class DetailTreatmentPage extends StatelessWidget {
 
             const SizedBox(height: 26),
 
-            // BENEFIT 
+            // BENEFIT (DIPERBAIKI)
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(18),
@@ -87,18 +84,34 @@ class DetailTreatmentPage extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                Text("Manfaat 🌸",
-                style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600, color: Appcolor.textBrownSoft)),
-                const SizedBox(height: 8),
-                ... (data["benefit"] as List<dynamic>).map((item) =>
-                Text("• $item", style: TextStyle(fontSize: 14, color: Appcolor.textBrownSoft.withOpacity(.9)))),
+                  Text(
+                    "Manfaat 🌸",
+                    style: TextStyle(
+                      fontSize: 17,
+                      fontWeight: FontWeight.w600,
+                      color: Appcolor.textBrownSoft,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+
+                  /// ✅ DI SINI PERBAIKANNYA
+                  ...(data["benefit"] as List<dynamic>).map((item) => Padding(
+                    padding: const EdgeInsets.only(bottom: 4),
+                    child: Text(
+                      "• $item",
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Appcolor.textBrownSoft.withOpacity(.9),
+                      ),
+                    ),
+                  )),
                 ],
               ),
             ),
 
-          const SizedBox(height: 26),
+            const SizedBox(height: 26),
 
-            // DURASI 
+            // DURASI
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(18),
@@ -108,17 +121,21 @@ class DetailTreatmentPage extends StatelessWidget {
                 border: Border.all(color: Appcolor.textBrownLight.withOpacity(.25)),
               ),
               child: Center(
-                child: Text("Durasi : ${data["duration"]}",
-                  style: 
-                  TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Appcolor.textBrownSoft)),
+                child: Text(
+                  "Durasi : ${data["duration"]}",
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color: Appcolor.textBrownSoft,
+                  ),
+                ),
               ),
             ),
 
             const SizedBox(height: 26),
 
-            //TINGKAT RASA SAKIT
+            // PAIN LEVEL
             Container(
-
               width: double.infinity,
               padding: const EdgeInsets.all(18),
               decoration: BoxDecoration(
@@ -126,15 +143,19 @@ class DetailTreatmentPage extends StatelessWidget {
                 borderRadius: BorderRadius.circular(18),
                 border: Border.all(color: Appcolor.textBrownLight.withOpacity(.25)),
               ),
-
               child: Text(
                 "Tingkat Rasa Sakit : ${data["painLevel"]}",
-                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Appcolor.textBrownSoft)),
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  color: Appcolor.textBrownSoft,
+                ),
+              ),
             ),
 
             const SizedBox(height: 26),
 
-            // HARGA BOX
+            // PRICE BOX
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
@@ -159,7 +180,6 @@ class DetailTreatmentPage extends StatelessWidget {
 
             const SizedBox(height: 40),
 
-            // BOOK BUTTON
             ElevatedButton(
               onPressed: () {
                 Navigator.push(
@@ -175,7 +195,6 @@ class DetailTreatmentPage extends StatelessWidget {
               style: ElevatedButton.styleFrom(
                 backgroundColor: Appcolor.button1,
                 foregroundColor: Colors.white,
-                elevation: 3,
                 minimumSize: const Size(double.infinity, 52),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
               ),

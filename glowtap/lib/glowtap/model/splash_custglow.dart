@@ -34,7 +34,7 @@ class _SplashCustglowState extends State<SplashCustglow> {
     if (isLogin == true) {
       Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(builder: (_) => const BottomCustGlow()),
+        MaterialPageRoute(builder: (_) => const BottomNavPage()),
         (route) => false,
       );
     } 

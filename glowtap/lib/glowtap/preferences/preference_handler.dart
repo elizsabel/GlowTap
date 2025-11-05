@@ -1,16 +1,14 @@
-import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:glowtap/glowtap/model/customer_model.dart';
 
 class PreferenceHandler {
   static const String isLogin = "isLogin";
   static const String userKey = "userData";
-  static const String isId = "isId";
 
   // Simpan status login
   static Future<void> saveLogin(bool value) async {
     final prefs = await SharedPreferences.getInstance();
-    prefs.setBool(isLogin, value);
+    await prefs.setBool(isLogin, value);
   }
 
   // Ambil status login
@@ -22,23 +20,34 @@ class PreferenceHandler {
   // Simpan data user
   static Future<void> saveUser(CustomerModel user) async {
     final prefs = await SharedPreferences.getInstance();
-    prefs.setString(userKey, user.toJson());
+    // Karena toJson() milik kamu sudah berbentuk String → simpan langsung
+    await prefs.setString(userKey, user.toJson());
   }
 
   // Ambil data user
   static Future<CustomerModel?> getUser() async {
     final prefs = await SharedPreferences.getInstance();
-    final json = prefs.getString(userKey);
-    if (json == null) return null;
-    return CustomerModel.fromJson(json);
+    final data = prefs.getString(userKey);
+    if (data == null) return null;
+    return CustomerModel.fromJson(data);
   }
 
-  // 
+  // Hapus hanya data user
+  static Future<void> removeUser() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(userKey);
+  }
 
-  // Hapus seluruh session
+  // Hapus status login saja
   static Future<void> removeLogin() async {
     final prefs = await SharedPreferences.getInstance();
-    prefs.remove(isLogin);
-    prefs.remove(userKey);
+    await prefs.remove(isLogin);
+  }
+
+  // Bersihkan SEMUA session (opsional)
+  static Future<void> clearSession() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(isLogin);
+    await prefs.remove(userKey);
   }
 }

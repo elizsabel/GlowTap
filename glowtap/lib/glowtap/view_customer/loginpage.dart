@@ -57,7 +57,7 @@ class _LoginCustGlowState extends State<LoginCustGlow> {
         // Jika berhasil login pindah ke home (Bottom Navigation)
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => BottomCustGlow()),
+          MaterialPageRoute(builder: (context) => BottomNavPage()),
         );
       } else {
         // Jika data tidak ditemukan

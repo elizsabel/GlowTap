@@ -1,9 +1,8 @@
-import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:glowtap/constant/appcolor.dart';
 import 'package:glowtap/glowtap/model/customer_model.dart';
-import 'package:glowtap/glowtap/database/db_helper.dart';
 import 'package:glowtap/glowtap/preferences/preference_handler.dart';
+import 'package:glowtap/glowtap/database/db_helper.dart';
 
 class EditProfilPage extends StatefulWidget {
   const EditProfilPage({super.key});
@@ -17,7 +16,7 @@ class _EditProfilPageState extends State<EditProfilPage> {
 
   final nameC = TextEditingController();
   final phoneC = TextEditingController();
-  final cityC = TextEditingController();
+  final passC = TextEditingController();
 
   @override
   void initState() {
@@ -25,95 +24,144 @@ class _EditProfilPageState extends State<EditProfilPage> {
     loadUser();
   }
 
-  loadUser() async {
+  void loadUser() async {
     user = await PreferenceHandler.getUser();
     if (user != null) {
       nameC.text = user!.name;
       phoneC.text = user!.phone;
-      cityC.text = user!.city;
-      setState(() {});
+      passC.text = user!.password;
     }
+    setState(() {});
   }
 
-  updateData() async {
+  // Ambil inisial nama
+  String _getInitial(String name) {
+    final parts = name.trim().split(" ");
+    if (parts.length > 1) return (parts[0][0] + parts[1][0]).toUpperCase();
+    return parts[0][0].toUpperCase();
+  }
+
+  void saveProfile() async {
     if (user == null) return;
 
-    final updatedUser = CustomerModel(
+    final updated = CustomerModel(
       id: user!.id,
       name: nameC.text,
-      email: user!.email,
+      email: user!.email, // tidak diubah
       phone: phoneC.text,
-      city: cityC.text,
-      password: user!.password,
+      password: passC.text,
     );
 
-    await DbHelper.updateCustomer(updatedUser);
-    await PreferenceHandler.saveUser(updatedUser);
+    await DbHelper.updateCustomer(updated);
+    await PreferenceHandler.saveUser(updated);
+
+    if (!mounted) return;
+    Navigator.pop(context);
 
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("Profil berhasil diperbarui!")),
+      const SnackBar(content: Text("Profil berhasil diperbarui ✨")),
     );
-
-    Navigator.pop(context); // Kembali ke AkunPage
   }
 
   @override
   Widget build(BuildContext context) {
+    if (user == null) {
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
+
     return Scaffold(
       backgroundColor: Appcolor.softPinkPastel,
       appBar: AppBar(
-        backgroundColor: Appcolor.button1,
+        elevation: 0,
+        backgroundColor: Colors.transparent,
         centerTitle: true,
-        title: const Text("Edit Profil", style: TextStyle(color: Colors.white)),
+        title: Text("Edit Profil 🎀", style: TextStyle(color: Appcolor.textBrownSoft)),
       ),
 
-      body: user == null
-          ? const Center(child: CircularProgressIndicator())
-          : Padding(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                children: [
-                  _input("Nama Lengkap", nameC),
-                  const SizedBox(height: 16),
-                  _input("No. Telepon", phoneC, keyboard: TextInputType.phone),
-                  const SizedBox(height: 16),
-                  _input("Kota / Domisili", cityC),
+      body: Padding(
+        padding: const EdgeInsets.all(24),
+        child: ListView(
+          children: [
+            const SizedBox(height: 10),
 
-                  const SizedBox(height: 28),
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: updateData,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Appcolor.button1,
-                        padding: const EdgeInsets.symmetric(vertical: 14),
-                      ),
-                      child: const Text(
-                        "Simpan Perubahan",
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ),
+            // Avatar
+            Center(
+              child: CircleAvatar(
+                radius: 48,
+                backgroundColor: Appcolor.button1.withOpacity(.9),
+                child: Text(
+                  _getInitial(user!.name),
+                  style: const TextStyle(
+                    fontSize: 34,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
                   ),
-                ],
+                ),
               ),
             ),
+
+            const SizedBox(height: 24),
+
+            _field("Nama Lengkap", nameC),
+            const SizedBox(height: 16),
+
+            _field("Nomor Handphone", phoneC),
+            const SizedBox(height: 16),
+
+            _field("Password", passC, isPass: true),
+            const SizedBox(height: 32),
+
+            ElevatedButton(
+              onPressed: saveProfile,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Appcolor.button1,
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(14),
+                ),
+              ),
+              child: const Text(
+                "Simpan Perubahan ✨",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
-  Widget _input(
-    String label,
-    TextEditingController c, {
-    TextInputType keyboard = TextInputType.text,
-  }) {
-    return TextField(
-      controller: c,
-      keyboardType: keyboard,
-      decoration: InputDecoration(
-        labelText: label,
-        filled: true,
-        fillColor: Colors.white,
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-      ),
+  Widget _field(String label, TextEditingController c, {bool isPass = false}) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(label,
+            style: TextStyle(
+              color: Appcolor.textBrownSoft,
+              fontWeight: FontWeight.w600,
+              fontSize: 15,
+            )),
+        const SizedBox(height: 6),
+        TextField(
+          controller: c,
+          obscureText: isPass,
+          decoration: InputDecoration(
+            filled: true,
+            fillColor: Colors.white,
+            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(14),
+              borderSide: BorderSide.none,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

@@ -154,19 +154,17 @@ class _RiwayatPesananPageState extends State<RiwayatPesananPage> {
       appBar: AppBar(
         backgroundColor: Appcolor.button1,
         centerTitle: true,
+        automaticallyImplyLeading: false,
         title: const Text(
           "Riwayat Pesanan",
           style: TextStyle(color: Colors.white),
         ),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (_) => const BottomCustGlow(index: 3)),
-            );
-          },
-        ),
+        // leading: IconButton(
+        //   icon: const Icon(Icons.arrow_back, color: Colors.black),
+        //   onPressed: () {
+        //     Navigator.pop(context);
+        //   },
+        // ),
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Appcolor.button1,
