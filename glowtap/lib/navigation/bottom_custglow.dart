@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:glowtap/constant/appcolor.dart';
+import 'package:glowtap/glowtap/view_customer/educationpage.dart';
+import 'package:glowtap/glowtap/view_customer/historypage.dart';
 
 import 'package:glowtap/glowtap/view_customer/homepage.dart';
-import 'package:glowtap/glowtap/view_customer/riwayatpesananpage.dart';
 import 'package:glowtap/glowtap/view_customer/akunpage.dart';
 
 class BottomNavPage extends StatefulWidget {
@@ -15,11 +16,11 @@ class BottomNavPage extends StatefulWidget {
 class _BottomNavPageState extends State<BottomNavPage> {
   int currentIndex = 0;
 
-  final List<Widget> pages = const [
+  final List<Widget> pages = [
     HomePage(),
-    RiwayatPesananPage(),
-    //EdukasiPage(),
-    AkunPage()
+    HistoryPage(),
+    EdukasiPage(),
+    AkunPage(),
   ];
 
   @override

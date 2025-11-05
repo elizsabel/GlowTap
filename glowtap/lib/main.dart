@@ -3,7 +3,6 @@ import 'package:glowtap/glowtap/database/history_service.dart';
 import 'package:glowtap/glowtap/model/splash_custglow.dart';
 import 'package:glowtap/navigation/bottom_custglow.dart';
 
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await HistoryService.loadHistory();
@@ -40,7 +39,7 @@ class MyApp extends StatelessWidget {
         // tested with just a hot reload.
         // colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: SplashCustglow(),
+      home: SplashGlowTap(),
     );
   }
 }

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:glowtap/constant/appcolor.dart';
-import 'package:glowtap/glowtap/model/customer_model.dart';
 import 'package:glowtap/glowtap/database/db_helper.dart';
+import 'package:glowtap/glowtap/model/customer_model.dart';
 
 class RegisterCustglow extends StatefulWidget {
   const RegisterCustglow({super.key});
@@ -13,31 +13,24 @@ class RegisterCustglow extends StatefulWidget {
 }
 
 class _RegisterCustGlowState extends State<RegisterCustglow> {
-  // Controller untuk menampung input pengguna
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController nameController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
-  final TextEditingController phoneController = TextEditingController();
+  // Controller untuk input pengguna
+  final TextEditingController usernameC = TextEditingController();
+  final TextEditingController nameC = TextEditingController();
+  final TextEditingController phoneC = TextEditingController();
+  final TextEditingController emailC = TextEditingController();
+  final TextEditingController passC = TextEditingController();
 
-  // Untuk visibility input password
   bool isVisibility = false;
-
-  // Key untuk validasi form
   final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          buildBackground(), // background gambar
-          buildFormLayer(),  // box form register
-        ],
-      ),
+      body: Stack(children: [buildBackground(), buildFormLayer()]),
     );
   }
 
-  /// ===================== UI LAYER REGISTER BOX =====================
+  /// ===================== UI FORM =====================
   SafeArea buildFormLayer() {
     return SafeArea(
       child: Form(
@@ -53,11 +46,10 @@ class _RegisterCustGlowState extends State<RegisterCustglow> {
                 BoxShadow(
                   color: Appcolor.pink1.withOpacity(0.4),
                   blurRadius: 12,
-                  offset: Offset(0, 4),
+                  offset: const Offset(0, 4),
                 ),
               ],
             ),
-
             child: SingleChildScrollView(
               child: Column(
                 children: [
@@ -69,72 +61,78 @@ class _RegisterCustGlowState extends State<RegisterCustglow> {
                       color: Appcolor.rosegoldDark,
                     ),
                   ),
-
-                  SizedBox(height: 12),
-                  Text("Isi data dengan benar ya 💗",
-                      style: TextStyle(color: Appcolor.textBrownSoft)),
-
-                  SizedBox(height: 22),
-
-                  // Input Nama
-                  buildTitle("Nama Lengkap"),
-                  buildTextField(
-                    hintText: "Masukkan nama kamu",
-                    icon: Icons.person_outline,
-                    controller: nameController,
-                    validator: (value) =>
-                        value!.isEmpty ? "Nama tidak boleh kosong" : null,
+                  const SizedBox(height: 12),
+                  Text(
+                    "Isi data dengan benar ya 💗",
+                    style: TextStyle(color: Appcolor.textBrownSoft),
                   ),
 
-                  SizedBox(height: 14),
+                  const SizedBox(height: 22),
 
-                  // Input No HP
+                  // USERNAME
+                  buildTitle("Username"),
+                  buildTextField(
+                    hintText: "Buat username unik",
+                    icon: Icons.account_circle_outlined,
+                    controller: usernameC,
+                    validator: (v) =>
+                        v!.isEmpty ? "Username tidak boleh kosong" : null,
+                  ),
+                  const SizedBox(height: 14),
+
+                  // NAMA
+                  buildTitle("Nama Lengkap"),
+                  buildTextField(
+                    hintText: "Masukkan nama lengkap",
+                    icon: Icons.person_outline,
+                    controller: nameC,
+                    validator: (v) =>
+                        v!.isEmpty ? "Nama tidak boleh kosong" : null,
+                  ),
+                  const SizedBox(height: 14),
+
+                  // HP
                   buildTitle("No. Handphone"),
                   buildTextField(
                     hintText: "Masukkan nomor handphone",
                     icon: Icons.phone_outlined,
-                    controller: phoneController,
-                    validator: (value) =>
-                        value!.length < 11 ? "Minimal 11 digit" : null,
+                    controller: phoneC,
+                    validator: (v) =>
+                        v!.length < 10 ? "Minimal 10 digit" : null,
                   ),
+                  const SizedBox(height: 14),
 
-                  SizedBox(height: 14),
-
-                  // Input Email
+                  // EMAIL
                   buildTitle("Email"),
                   buildTextField(
-                    hintText: "Masukkan email kamu",
+                    hintText: "Masukkan email",
                     icon: Icons.email_outlined,
-                    controller: emailController,
-                    validator: (value) {
-                      if (value!.isEmpty) return "Email tidak boleh kosong";
-                      if (!value.contains("@")) return "Email tidak valid";
+                    controller: emailC,
+                    validator: (v) {
+                      if (v!.isEmpty) return "Email tidak boleh kosong";
+                      if (!v.contains("@")) return "Email tidak valid";
                       return null;
                     },
                   ),
+                  const SizedBox(height: 14),
 
-                  SizedBox(height: 14),
-
-                  // Input Password
+                  // PASSWORD
                   buildTitle("Password"),
                   buildTextField(
                     hintText: "Masukkan password",
                     icon: Icons.lock_outline,
-                    controller: passwordController,
+                    controller: passC,
                     isPassword: true,
-                    validator: (value) =>
-                        value!.length < 6 ? "Minimal 6 karakter" : null,
+                    validator: (v) =>
+                        v!.length < 6 ? "Minimal 6 karakter" : null,
                   ),
+                  const SizedBox(height: 22),
 
-                  SizedBox(height: 22),
-
-                  // Tombol Register
                   RegisterButton(
                     text: "Daftar Sekarang",
                     onPressed: registerUser,
                   ),
-
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
 
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -151,7 +149,7 @@ class _RegisterCustGlowState extends State<RegisterCustglow> {
                         ),
                       ),
                     ],
-                  )
+                  ),
                 ],
               ),
             ),
@@ -161,29 +159,35 @@ class _RegisterCustGlowState extends State<RegisterCustglow> {
     );
   }
 
-  /// ===================== REGISTER FUNCTION =====================
+  /// ===================== REGISTER LOGIC =====================
   void registerUser() async {
     if (_formKey.currentState!.validate()) {
-      final CustomerModel data = CustomerModel(
-        name: nameController.text,
-        email: emailController.text,
-        phone: phoneController.text,
-        password: passwordController.text,
+      final user = CustomerModel(
+        username: usernameC.text.trim(),
+        name: nameC.text.trim(),
+        email: emailC.text.trim(),
+        phone: phoneC.text.trim(),
+        password: passC.text.trim(),
       );
 
-      await DbHelper.registerUser(data);
+      await DbHelper.registerUser(user);
+
       Fluttertoast.showToast(msg: "Pendaftaran berhasil 💗");
       Navigator.pop(context);
     }
   }
 
-  /// ===================== REUSABLE WIDGET =====================
+  /// ===================== WIDGET REUSABLE =====================
   Widget buildTitle(String text) => Align(
-        alignment: Alignment.centerLeft,
-        child: Text(text,
-            style: TextStyle(
-                fontWeight: FontWeight.w600, color: Appcolor.textBrownSoft)),
-      );
+    alignment: Alignment.centerLeft,
+    child: Text(
+      text,
+      style: TextStyle(
+        fontWeight: FontWeight.w600,
+        color: Appcolor.textBrownSoft,
+      ),
+    ),
+  );
 
   TextFormField buildTextField({
     required String hintText,
@@ -205,14 +209,16 @@ class _RegisterCustGlowState extends State<RegisterCustglow> {
         suffixIcon: isPassword
             ? IconButton(
                 onPressed: () => setState(() => isVisibility = !isVisibility),
-                icon: Icon(isVisibility ? Icons.visibility : Icons.visibility_off),
+                icon: Icon(
+                  isVisibility ? Icons.visibility : Icons.visibility_off,
+                  color: Appcolor.textBrownSoft,
+                ),
               )
             : null,
       ),
     );
   }
 
-  /// Background UI
   Widget buildBackground() {
     return Container(
       decoration: const BoxDecoration(
@@ -225,7 +231,7 @@ class _RegisterCustGlowState extends State<RegisterCustglow> {
   }
 }
 
-/// ===================== REGISTER BUTTON =====================
+/// ===================== BUTTON =====================
 class RegisterButton extends StatelessWidget {
   final void Function()? onPressed;
   final String text;
@@ -241,11 +247,18 @@ class RegisterButton extends StatelessWidget {
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
           backgroundColor: Appcolor.button1,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
         ),
-        child: Text(text,
-            style: TextStyle(
-                color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16)),
+        child: Text(
+          text,
+          style: const TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: 16,
+          ),
+        ),
       ),
     );
   }

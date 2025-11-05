@@ -1,95 +1,56 @@
 import 'package:flutter/material.dart';
-import 'package:glowtap/constant/appimage.dart';
-import 'package:glowtap/navigation/bottom_custglow.dart';
-import 'package:glowtap/glowtap/preferences/preference_handler.dart';
+import 'package:glowtap/constant/appcolor.dart';
 import 'package:glowtap/glowtap/view_customer/loginpage.dart';
+import 'package:glowtap/navigation/bottom_custglow.dart';
 
-class SplashCustglow extends StatefulWidget {
-  const SplashCustglow({super.key});
+class SplashGlowTap extends StatefulWidget {
+  const SplashGlowTap({super.key});
 
   @override
-  State<SplashCustglow> createState() => _SplashCustglowState();
+  State<SplashGlowTap> createState() => _SplashGlowTapState();
 }
 
-class _SplashCustglowState extends State<SplashCustglow> {
+class _SplashGlowTapState extends State<SplashGlowTap>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _fade;
 
   @override
   void initState() {
     super.initState();
-    _navigateUser(); // Panggil fungsi pengecekan login
-  }
 
-  /// ================================
-  /// CEK STATUS LOGIN & NAVIGASI OTOMATIS
-  /// ================================
-  Future<void> _navigateUser() async {
-    // Delay splash selama 3 detik
-    await Future.delayed(const Duration(seconds: 3));
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 2),
+    );
 
-    // Ambil nilai login dari SharedPreferences
-    bool? isLogin = await PreferenceHandler.getLogin();
-    print("Login Status: $isLogin");
+    _fade = CurvedAnimation(parent: _controller, curve: Curves.easeInOut);
+    _controller.forward();
 
-    // Jika user sudah login → Langsung masuk ke beranda
-    if (isLogin == true) {
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (_) => const BottomNavPage()),
-        (route) => false,
-      );
-    } 
-    // Jika belum login → Masuk ke halaman login
-    else {
-      Navigator.pushAndRemoveUntil(
+    Future.delayed(const Duration(seconds: 3), () {
+      Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (_) => const LoginCustGlow()),
-        (route) => false,
       );
-    }
+    });
   }
 
-  /// ================================
-  /// UI SPLASH SCREEN
-  /// ================================
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      
+      backgroundColor: Appcolor.softPinkPastel,
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            
-            /// LOGO / IMAGE SPLASH
-            Image.asset(
-              AppImage.splashimage,
-              width: 300,
-              height: 300,
-            ),
-            const SizedBox(height: 18),
+        child: FadeTransition(
+          opacity: _fade,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // LOGO
+              Image.asset("assets/images/glowtaptn.png", width: 300),
 
-            /// TEXT BRAND
-            const Text(
-              "GlowTap",
-              style: TextStyle(
-                fontSize: 26,
-                fontWeight: FontWeight.bold,
-                color: Color(0xFFF7EFE9),
-              ),
-            ),
-
-            const SizedBox(height: 8),
-
-            /// TAGLINE HALUS ✨
-            const Text(
-              "Glow from Home ✨",
-              style: TextStyle(
-                fontSize: 14,
-                color: Color(0xFFC47A78),
-              ),
-            ),
-          ],
+              const SizedBox(height: 18),
+            ],
+          ),
         ),
       ),
     );

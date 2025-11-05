@@ -18,7 +18,7 @@ class _AddJournalPageState extends State<AddJournalPage> {
   void initState() {
     super.initState();
     if (widget.journal != null) {
-      noteController.text = widget.journal!.note;
+      noteController.text = widget.journal!.content;
     }
   }
 
@@ -82,7 +82,7 @@ class _AddJournalPageState extends State<AddJournalPage> {
                   await DbHelper.addJournal(
                     JournalModel(
                       date: DateTime.now().toString().split(" ").first,
-                      note: noteController.text,
+                      content: noteController.text,
                     ),
                   );
                 } else {
@@ -90,7 +90,7 @@ class _AddJournalPageState extends State<AddJournalPage> {
                     JournalModel(
                       id: widget.journal!.id,
                       date: widget.journal!.date,
-                      note: noteController.text,
+                      content: noteController.text,
                     ),
                   );
                 }

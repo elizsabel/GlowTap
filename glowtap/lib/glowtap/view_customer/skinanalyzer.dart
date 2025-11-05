@@ -9,211 +9,221 @@ class SkinAnalyzerPage extends StatefulWidget {
 }
 
 class _SkinAnalyzerPageState extends State<SkinAnalyzerPage> {
-  int currentQuestion = 0;
-  String? selectedAnswer;
+  int questionIndex = 0;
+  List<String> answers = [];
 
   final List<Map<String, dynamic>> questions = [
     {
-      "q": "Bagaimana kondisi kulitmu saat bangun pagi?",
-      "a": [
-        "Cenderung berminyak",
+      "q": "Bagaimana kondisi kulitmu saat bangun tidur?",
+      "options": [
         "Kering & terasa ketarik",
-        "Normal & lembut",
-        "Zona T berminyak, pipi kering"
-      ]
+        "Normal saja",
+        "Berminyak di T-zone",
+        "Berminyak seluruh wajah",
+      ],
     },
     {
-      "q": "Bagaimana kulitmu bereaksi setelah memakai skincare baru?",
-      "a": [
-        "Mudah jerawatan",
-        "Cepat kering/iritasi",
-        "Tidak ada reaksi berarti",
-        "T-zone berminyak tapi pipi baik"
-      ]
+      "q": "Apa masalah utama yang kamu rasakan saat ini?",
+      "options": [
+        "Kulit kusam",
+        "Berjerawat",
+        "Pori besar",
+        "Garis halus / aging",
+      ],
     },
     {
-      "q": "Bagaimana tampilan pori-pori wajahmu?",
-      "a": [
-        "Besar & terlihat jelas",
-        "Sangat kecil hampir tidak terlihat",
-        "Normal & tidak mengganggu",
-        "Besar hanya di area hidung/dahi"
-      ]
-    }
+      "q": "Seberapa sering kamu menggunakan sunscreen?",
+      "options": ["Setiap hari", "Kadang-kadang", "Jarang", "Tidak pernah"],
+    },
   ];
 
-  Map<String, String> skinResults = {
-    "Cenderung berminyak": "Kulit Berminyak 🍩",
-    "Kering & terasa ketarik": "Kulit Kering 🧁",
-    "Normal & lembut": "Kulit Normal 🍑",
-    "Zona T berminyak, pipi kering": "Kulit Kombinasi 🍓",
-  };
+  // Tentukan hasil berdasarkan jawaban nomor 1
+  String getResultType() {
+    switch (answers[0]) {
+      case "Kering & terasa ketarik":
+        return "Kering";
+      case "Normal saja":
+        return "Normal";
+      case "Berminyak di T-zone":
+        return "Kombinasi";
+      default:
+        return "Berminyak";
+    }
+  }
 
-  void submit() {
-    if (selectedAnswer == null) return;
-    String result = skinResults[selectedAnswer!] ?? "Kulit Normal 🍑";
+  // Rekomendasi treatment GlowTap
+  String getRecommendation() {
+    switch (getResultType()) {
+      case "Kering":
+        return "✨ Profhilo Skin Booster";
+      case "Normal":
+        return "🧬 DNA Salmon Injection";
+      case "Kombinasi":
+        return "🌱 Rejuran Healer";
+      default:
+        return "🎀 Botox Micro Toxin (Glow Botox)";
+    }
+  }
 
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (_) => SkinResultPage(result: result)),
+  void showResult() {
+    showDialog(
+      context: context,
+      builder: (_) => Dialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        child: Container(
+          padding: const EdgeInsets.all(22),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                "✨ Hasil Skin Analyzer ✨",
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w700,
+                  color: Appcolor.button1,
+                ),
+              ),
+              const SizedBox(height: 14),
+
+              Text(
+                "Jenis Kulitmu: ${getResultType()}",
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Appcolor.textBrownSoft,
+                  fontWeight: FontWeight.w600,
+                ),
+                textAlign: TextAlign.center,
+              ),
+
+              const SizedBox(height: 14),
+              Container(
+                padding: const EdgeInsets.all(14),
+                decoration: BoxDecoration(
+                  color: Appcolor.softPinkPastel,
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                child: Text(
+                  "Rekomendasi Treatment:\n${getRecommendation()}",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
+                    color: Appcolor.button1,
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 22),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () => Navigator.pop(context),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Appcolor.button1,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                  ),
+                  child: const Text(
+                    "Oke, mengerti 💗",
+                    style: TextStyle(fontSize: 15),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
+  }
+
+  void selectAnswer(String answer) {
+    answers.add(answer);
+
+    if (questionIndex < questions.length - 1) {
+      setState(() => questionIndex++);
+    } else {
+      showResult();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final now = questions[currentQuestion];
+    final data = questions[questionIndex];
 
     return Scaffold(
-      backgroundColor: const Color(0xFFFFF7FA),
+      backgroundColor: Appcolor.softPinkPastel,
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
         elevation: 0,
+        backgroundColor: Appcolor.button1,
         centerTitle: true,
-        title: Text(
-          "Skin Analyzer 🧸✨",
-          style: TextStyle(
-            color: Appcolor.textBrownSoft,
-            fontWeight: FontWeight.bold,
-          ),
+        title: const Text(
+          "Skin Analyzer",
+          style: TextStyle(color: Colors.white),
         ),
       ),
-
       body: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(24),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Pertanyaan
             Text(
-              now["q"],
-              style: TextStyle(
-                color: Appcolor.textBrownSoft,
-                fontWeight: FontWeight.w700,
-                fontSize: 18,
-              ),
-              textAlign: TextAlign.center,
+              "Pertanyaan ${questionIndex + 1} dari ${questions.length}",
+              style: TextStyle(color: Appcolor.textBrownSoft),
             ),
+            const SizedBox(height: 18),
+
+            // CARD PERTANYAAN
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(18),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Text(
+                data["q"],
+                style: TextStyle(
+                  fontSize: 17,
+                  fontWeight: FontWeight.w700,
+                  color: Appcolor.textBrownSoft,
+                ),
+              ),
+            ),
+
             const SizedBox(height: 22),
 
-            // Pilihan Jawaban
-            ...now["a"].map<Widget>((option) {
-              return GestureDetector(
-                onTap: () => setState(() => selectedAnswer = option),
-                child: Container(
-                  margin: const EdgeInsets.only(bottom: 14),
-                  padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
-                  decoration: BoxDecoration(
-                    color: selectedAnswer == option
-                        ? const Color(0xFFFFC6D9)
-                        : Colors.white,
-                    borderRadius: BorderRadius.circular(18),
-                    border: Border.all(
-                      color: selectedAnswer == option
-                          ? const Color(0xFFFF8CB8)
-                          : Colors.pink.shade100,
-                      width: 2,
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.pink.shade100.withOpacity(.4),
-                        blurRadius: 10,
-                        offset: const Offset(0, 4),
+            // LIST PILIHAN
+            ...data["options"].map<Widget>((opt) {
+              return Center(
+                child: InkWell(
+                  onTap: () => selectAnswer(opt),
+                  child: Container(
+                    margin: const EdgeInsets.only(bottom: 14),
+                    padding: const EdgeInsets.all(14),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(14),
+                      border: Border.all(
+                        color: Appcolor.button1.withOpacity(.3),
                       ),
-                    ],
-                  ),
-                  child: Text(
-                    "💕 $option",
-                    style: TextStyle(
-                      color: Appcolor.textBrownSoft,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
+                    ),
+                    child: Text(
+                      opt,
+                      style: TextStyle(
+                        fontSize: 15,
+                        color: Appcolor.textBrownSoft,
+                      ),
                     ),
                   ),
                 ),
               );
-            }).toList(),
-
-            const Spacer(),
-
-            // Tombol lanjut
-            ElevatedButton(
-              onPressed: submit,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFFF8CB8),
-                minimumSize: const Size(double.infinity, 52),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                ),
-              ),
-              child: const Text(
-                "Lihat Hasil ✨",
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-// ======== HALAMAN HASIL ========
-
-class SkinResultPage extends StatelessWidget {
-  final String result;
-  const SkinResultPage({super.key, required this.result});
-
-  @override
-  Widget build(BuildContext context) {
-    Map<String, String> tips = {
-      "Kulit Berminyak 🍩":
-          "Gunakan moisturizer gel + sunscreen matte 🍃\nHindari scrub berlebihan yaa 💗",
-      "Kulit Kering 🧁":
-          "Prioritaskan hydrating toner + ceramide 💧\nGunakan sunscreen creamy 🤍",
-      "Kulit Normal 🍑":
-          "Pertahankan rutinitas skincare, cukup hidrasi ✨",
-      "Kulit Kombinasi 🍓":
-          "Gunakan moisturizer berbeda untuk T-zone & pipi 🌸",
-    };
-
-    return Scaffold(
-      backgroundColor: const Color(0xFFFFF7FA),
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        title: const Text("Hasil Analisa 🪞"),
-        centerTitle: true,
-      ),
-
-      body: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          children: [
-            Text(
-              result,
-              style: const TextStyle(
-                fontSize: 28,
-                fontWeight: FontWeight.w800,
-                color: Color(0xFFFF8CB8),
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 20),
-            Container(
-              padding: const EdgeInsets.all(18),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(18),
-                border: Border.all(color: Colors.pink.shade100),
-              ),
-              child: Text(
-                tips[result]!,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Appcolor.textBrownSoft,
-                  fontSize: 15,
-                ),
-              ),
-            ),
+            }),
           ],
         ),
       ),

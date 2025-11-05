@@ -1,37 +1,37 @@
 import 'dart:convert';
 
-/// Model data untuk menyimpan informasi akun customer.
-/// Digunakan saat registrasi, login, dan pengelolaan profil.
 class CustomerModel {
-  int? id;            // ID unik (primary key) - otomatis dibuat oleh database    // Alamat / kota (tempat tinggal pengguna)
-  String name;        // Nama lengkap pengguna
-  String email;       // Email untuk login
-  String phone;       // Nomor handphone
+  int? id;
+  String username;
+  String name;
+  String email;
+  String phone;
   String password;
 
   CustomerModel({
     this.id,
+    required this.username,
     required this.name,
     required this.email,
     required this.phone,
     required this.password,
   });
 
-  /// Mengubah object CustomerModel menjadi Map (format yang dapat disimpan ke database).
   Map<String, dynamic> toMap() {
     return {
       'id': id,
+      'username': username, // ✅ MASUKKAN
       'name': name,
-      'phone': phone,
       'email': email,
+      'phone': phone,
       'password': password,
     };
   }
 
-  /// Mengubah data Map (dari database) menjadi object CustomerModel.
   factory CustomerModel.fromMap(Map<String, dynamic> map) {
     return CustomerModel(
-      id: map['id'],                 
+      id: map['id'],
+      username: map['username'] ?? '', // ✅ AMBIL DARI DATABASE
       name: map['name'],
       email: map['email'],
       phone: map['phone'],
@@ -39,12 +39,8 @@ class CustomerModel {
     );
   }
 
-  /// Mengubah object CustomerModel menjadi JSON (untuk keperluan penyimpanan lokal / API).
   String toJson() => json.encode(toMap());
 
-  /// Mengubah JSON kembali menjadi object CustomerModel.
   factory CustomerModel.fromJson(String source) =>
       CustomerModel.fromMap(json.decode(source));
 }
-
-

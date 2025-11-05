@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:glowtap/constant/appcolor.dart';
+import 'package:glowtap/glowtap/database/db_helper.dart';
 import 'package:glowtap/glowtap/model/customer_model.dart';
 import 'package:glowtap/glowtap/preferences/preference_handler.dart';
-import 'package:glowtap/glowtap/database/db_helper.dart';
 
 class EditProfilPage extends StatefulWidget {
   const EditProfilPage({super.key});
@@ -30,15 +30,8 @@ class _EditProfilPageState extends State<EditProfilPage> {
       nameC.text = user!.name;
       phoneC.text = user!.phone;
       passC.text = user!.password;
+      setState(() {});
     }
-    setState(() {});
-  }
-
-  // Ambil inisial nama
-  String _getInitial(String name) {
-    final parts = name.trim().split(" ");
-    if (parts.length > 1) return (parts[0][0] + parts[1][0]).toUpperCase();
-    return parts[0][0].toUpperCase();
   }
 
   void saveProfile() async {
@@ -46,17 +39,18 @@ class _EditProfilPageState extends State<EditProfilPage> {
 
     final updated = CustomerModel(
       id: user!.id,
-      name: nameC.text,
-      email: user!.email, // tidak diubah
-      phone: phoneC.text,
-      password: passC.text,
+      username: user!.username,
+      name: nameC.text.trim(),
+      email: user!.email,
+      phone: phoneC.text.trim(),
+      password: passC.text.trim(),
     );
 
     await DbHelper.updateCustomer(updated);
     await PreferenceHandler.saveUser(updated);
 
     if (!mounted) return;
-    Navigator.pop(context);
+    Navigator.pop(context, true); // ✅ penting untuk refresh
 
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text("Profil berhasil diperbarui ✨")),
@@ -66,9 +60,7 @@ class _EditProfilPageState extends State<EditProfilPage> {
   @override
   Widget build(BuildContext context) {
     if (user == null) {
-      return const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      );
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
     return Scaffold(
@@ -77,22 +69,21 @@ class _EditProfilPageState extends State<EditProfilPage> {
         elevation: 0,
         backgroundColor: Colors.transparent,
         centerTitle: true,
-        title: Text("Edit Profil 🎀", style: TextStyle(color: Appcolor.textBrownSoft)),
+        title: Text(
+          "Edit Profil 🎀",
+          style: TextStyle(color: Appcolor.textBrownSoft),
+        ),
       ),
-
       body: Padding(
         padding: const EdgeInsets.all(24),
         child: ListView(
           children: [
-            const SizedBox(height: 10),
-
-            // Avatar
             Center(
               child: CircleAvatar(
                 radius: 48,
                 backgroundColor: Appcolor.button1.withOpacity(.9),
                 child: Text(
-                  _getInitial(user!.name),
+                  user!.name.isNotEmpty ? user!.name[0].toUpperCase() : "?",
                   style: const TextStyle(
                     fontSize: 34,
                     fontWeight: FontWeight.bold,
@@ -103,16 +94,13 @@ class _EditProfilPageState extends State<EditProfilPage> {
             ),
 
             const SizedBox(height: 24),
-
             _field("Nama Lengkap", nameC),
             const SizedBox(height: 16),
-
             _field("Nomor Handphone", phoneC),
             const SizedBox(height: 16),
-
             _field("Password", passC, isPass: true),
-            const SizedBox(height: 32),
 
+            const SizedBox(height: 32),
             ElevatedButton(
               onPressed: saveProfile,
               style: ElevatedButton.styleFrom(
@@ -127,7 +115,7 @@ class _EditProfilPageState extends State<EditProfilPage> {
                 style: TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
-                  fontSize: 16
+                  fontSize: 16,
                 ),
               ),
             ),
@@ -141,12 +129,13 @@ class _EditProfilPageState extends State<EditProfilPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label,
-            style: TextStyle(
-              color: Appcolor.textBrownSoft,
-              fontWeight: FontWeight.w600,
-              fontSize: 15,
-            )),
+        Text(
+          label,
+          style: TextStyle(
+            color: Appcolor.textBrownSoft,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
         const SizedBox(height: 6),
         TextField(
           controller: c,
@@ -154,7 +143,6 @@ class _EditProfilPageState extends State<EditProfilPage> {
           decoration: InputDecoration(
             filled: true,
             fillColor: Colors.white,
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(14),
               borderSide: BorderSide.none,

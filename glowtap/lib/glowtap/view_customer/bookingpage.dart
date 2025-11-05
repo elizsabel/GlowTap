@@ -1,285 +1,222 @@
 import 'package:flutter/material.dart';
 import 'package:glowtap/constant/appcolor.dart';
-import 'package:glowtap/glowtap/database/db_helper.dart';
-import 'package:glowtap/glowtap/view_customer/metodepembayaranpage.dart';
-import 'package:glowtap/glowtap/view_customer/riwayatpesananpage.dart';
-import 'package:glowtap/glowtap/view_customer/uploadbuktipage.dart';
+import 'package:glowtap/glowtap/view_customer/bookingconfirmpage.dart';
 
-class BookingPage extends StatefulWidget {
+// Halaman Booking untuk memilih tanggal, jam, alamat & catatan
+class Bookingpage extends StatefulWidget {
   final String treatmentName;
   final String treatmentPrice;
 
-  const BookingPage({
+  const Bookingpage({
     super.key,
     required this.treatmentName,
     required this.treatmentPrice,
   });
 
   @override
-  State<BookingPage> createState() => _BookingPageState();
+  State<Bookingpage> createState() => _BookingpagePageState();
 }
 
-class _BookingPageState extends State<BookingPage> {
-  String? selectedDoctor;
+class _BookingpagePageState extends State<Bookingpage> {
+  // Variabel untuk menyimpan tanggal & jam yang dipilih user
   DateTime? selectedDate;
   String? selectedTime;
 
-  final addressController = TextEditingController();
-  final phoneController = TextEditingController();
+  // Controller untuk input alamat & catatan
+  final TextEditingController alamatC = TextEditingController();
+  final TextEditingController catatanC = TextEditingController();
 
-  final List<String> doctorList = [
-    "dr. Citra Anindya",
-    "dr. Fadhila Ayu",
-    "dr. Maya Putri",
+  // List pilihan jam yang tersedia
+  final List<String> timeSlots = [
+    "09:00",
+    "10:30",
+    "13:00",
+    "15:00",
+    "17:00",
+    "19:00",
   ];
 
-  final List<String> timeSlots = ["09:00", "11:00", "13:00", "15:00", "17:00"];
+  // Fungsi memilih tanggal (Menampilkan widget kalender bawaan Flutter)
+  Future pickDate() async {
+    DateTime? date = await showDatePicker(
+      context: context,
+      firstDate: DateTime.now(), // tanggal minimal hari ini
+      lastDate: DateTime.now().add(const Duration(days: 30)), // maksimal 30 hari ke depan
+      initialDate: DateTime.now(),
+      builder: (context, child) {
+        // Customize warna kalender sesuai tema GlowTap
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: ColorScheme.light(primary: Appcolor.button1),
+          ),
+          child: child!,
+        );
+      },
+    );
+
+    if (date != null) setState(() => selectedDate = date);
+  }
+
+  // Fungsi untuk lanjut ke halaman konfirmasi pemesanan
+  void confirm() {
+    // Validasi → wajib isi tanggal + jam + alamat
+    if (selectedDate == null || selectedTime == null || alamatC.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Silakan lengkapi jadwal & alamat dulu ya 💗")),
+      );
+      return;
+    }
+
+    // Jika lengkap → pindah ke halaman konfirmasi
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => BookingConfirmPage(
+          treatmentName: widget.treatmentName,
+          treatmentPrice: widget.treatmentPrice,
+          selectedDate: "${selectedDate!.day}/${selectedDate!.month}/${selectedDate!.year}",
+          selectedTime: selectedTime!,
+          address: alamatC.text,
+          note: catatanC.text,
+        ),
+      ),
+    );
+  }
+
+  // Widget reusable untuk input (alamat & catatan)
+  Widget inputField(String label, TextEditingController c, {int maxLines = 1}) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(label,
+          style: TextStyle(
+            color: Appcolor.textBrownSoft,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        const SizedBox(height: 6),
+        TextField(
+          controller: c,
+          maxLines: maxLines,
+          decoration: InputDecoration(
+            filled: true,
+            fillColor: Colors.white,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(14),
+              borderSide: BorderSide.none,
+            ),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          ),
+        ),
+      ],
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    final ready =
-        selectedDoctor != null &&
-        selectedDate != null &&
-        selectedTime != null &&
-        addressController.text.isNotEmpty &&
-        phoneController.text.isNotEmpty;
-
     return Scaffold(
-      backgroundColor: const Color(0xFFFCEDE9),
+      backgroundColor: Appcolor.softPinkPastel,
       appBar: AppBar(
         backgroundColor: Appcolor.button1,
         centerTitle: true,
-        title: Text(
-          "Booking ${widget.treatmentName}",
-          style: const TextStyle(color: Colors.white),
-        ),
+        title: const Text("Atur Jadwal & Lokasi", style: TextStyle(color: Colors.white)),
       ),
 
-      body: ListView(
-        padding: const EdgeInsets.all(20),
-        children: [
-          _section(
-            title: "Pilih Dokter",
-            child: DropdownButtonFormField(
-              value: selectedDoctor,
-              decoration: _input("Pilih Dokter"),
-              items: doctorList
-                  .map((e) => DropdownMenuItem(value: e, child: Text(e)))
-                  .toList(),
-              onChanged: (v) => setState(() => selectedDoctor = v),
-            ),
-          ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Pilih Tanggal
+            Text("Tanggal Treatment ✨", style: TextStyle(color: Appcolor.textBrownSoft, fontWeight: FontWeight.w600)),
+            const SizedBox(height: 12),
 
-          _section(
-            title: "Pilih Tanggal",
-            child: GestureDetector(
-              onTap: _selectDate,
+            InkWell(
+              onTap: pickDate,
               child: Container(
                 padding: const EdgeInsets.all(14),
-                decoration: _box(),
-                child: Text(
-                  selectedDate == null
-                      ? "DD / MM / YYYY"
-                      : "${selectedDate!.day}/${selectedDate!.month}/${selectedDate!.year}",
+                decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(14)),
+                child: Row(
+                  children: [
+                    const Icon(Icons.calendar_month, color: Colors.pink),
+                    const SizedBox(width: 12),
+                    Text(
+                      selectedDate == null
+                          ? "Pilih tanggal"
+                          : "${selectedDate!.day}/${selectedDate!.month}/${selectedDate!.year}",
+                      style: TextStyle(color: Appcolor.textBrownSoft),
+                    ),
+                  ],
                 ),
               ),
             ),
-          ),
 
-          _section(
-            title: "Pilih Waktu",
-            child: Wrap(
-              spacing: 10,
-              children: timeSlots
-                  .map(
-                    (time) => ChoiceChip(
-                      label: Text(time),
-                      selected: selectedTime == time,
-                      selectedColor: Appcolor.button1,
-                      onSelected: (_) => setState(() => selectedTime = time),
-                      labelStyle: TextStyle(
-                        color: selectedTime == time
-                            ? Colors.white
-                            : Colors.black,
-                      ),
-                    ),
-                  )
-                  .toList(),
-            ),
-          ),
+            const SizedBox(height: 24),
 
-          _section(
-            title: "Alamat Rumah",
-            child: TextField(
-              controller: addressController,
-              decoration: _input("Masukkan alamat lengkap"),
-            ),
-          ),
-          _section(
-            title: "No. Telepon",
-            child: TextField(
-              controller: phoneController,
-              keyboardType: TextInputType.phone,
-              decoration: _input("08xxxxxxxxxx"),
-            ),
-          ),
+            // Pilih Jam
+            Text("Pilih Jam ⏰", style: TextStyle(color: Appcolor.textBrownSoft, fontWeight: FontWeight.w600)),
+            const SizedBox(height: 12),
 
-          const SizedBox(height: 28),
-          ElevatedButton(
-            onPressed: ready ? _showSummary : null,
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Appcolor.button1,
-              padding: const EdgeInsets.symmetric(vertical: 14),
-            ),
-            child: const Text(
-              "Lanjut ke Pembayaran",
-              style: TextStyle(color: Colors.white),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  // ========= RINGKASAN =========
-  void _showSummary() {
-    showModalBottomSheet(
-      context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
-      builder: (_) => Padding(
-        padding: const EdgeInsets.fromLTRB(24, 18, 24, 24),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            SummaryRow(label: "Treatment", value: widget.treatmentName),
-            SummaryRow(label: "Dokter", value: selectedDoctor!),
-            SummaryRow(
-              label: "Tanggal",
-              value:
-                  "${selectedDate!.day}/${selectedDate!.month}/${selectedDate!.year}",
-            ),
-            SummaryRow(label: "Waktu", value: selectedTime!),
-            SummaryRow(label: "Alamat", value: addressController.text),
-            SummaryRow(label: "Telepon", value: phoneController.text),
-            SummaryRow(label: "Harga", value: widget.treatmentPrice),
-
-            const SizedBox(height: 18),
-            ElevatedButton(
-              onPressed: () async {
-                Navigator.pop(context);
-
-                final metode = await Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) =>
-                        MetodePembayaranPage(totalPrice: widget.treatmentPrice),
-                  ),
+            Wrap(
+              spacing: 12,
+              runSpacing: 12,
+              children: timeSlots.map((time) {
+                final isSelected = time == selectedTime;
+                return ChoiceChip(
+                  label: Text(time),
+                  selected: isSelected,
+                  selectedColor: Appcolor.button1,
+                  labelStyle: TextStyle(color: isSelected ? Colors.white : Appcolor.textBrownSoft),
+                  onSelected: (_) => setState(() => selectedTime = time),
                 );
+              }).toList(),
+            ),
 
-                print("Metode dipilih: $metode");
+            const SizedBox(height: 28),
 
-                if (metode == "COD") {
-                  await DbHelper.addHistory(
-                    treatment: widget.treatmentName,
-                    date:
-                        "${selectedDate!.day}/${selectedDate!.month}/${selectedDate!.year} • $selectedTime",
-                    status: "Menunggu Konfirmasi",
-                  );
+            // Input Alamat & Catatan
+            inputField("Alamat Lengkap", alamatC),
+            const SizedBox(height: 16),
 
-                  final hasil = await DbHelper.getHistory();
-                  print("ISI DATABASE SEKARANG = $hasil");
+            inputField("Catatan (Opsional)", catatanC, maxLines: 3),
+            const SizedBox(height: 30),
 
-                  Navigator.of(context).pushAndRemoveUntil(
-                    MaterialPageRoute(
-                      builder: (_) => const RiwayatPesananPage(),
+            // Informasi Pembayaran COD
+            Container(
+              padding: const EdgeInsets.all(14),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(color: Appcolor.textBrownLight.withOpacity(.25)),
+              ),
+              child: Row(
+                children: [
+                  const Text("💗", style: TextStyle(fontSize: 18)),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Text(
+                      "Pembayaran dilakukan saat dokter/beautician datang (COD) ✨ Tidak perlu transfer terlebih dahulu 💕",
+                      style: TextStyle(color: Appcolor.textBrownSoft, fontSize: 14, height: 1.4),
                     ),
-                    (route) => false,
-                  );
-                }
-              },
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 30),
+
+            // Tombol Konfirmasi
+            ElevatedButton(
+              onPressed: confirm,
               style: ElevatedButton.styleFrom(
                 backgroundColor: Appcolor.button1,
+                minimumSize: const Size(double.infinity, 52),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
               ),
-              child: const Text(
-                "Konfirmasi & Simpan",
-                style: TextStyle(color: Colors.white),
-              ),
+              child: const Text("Konfirmasi Pemesanan ✨", style: TextStyle(fontSize: 16)),
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  // ========= UI HELPER =========
-  Widget _section({required String title, required Widget child}) => Container(
-    margin: const EdgeInsets.only(bottom: 16),
-    padding: const EdgeInsets.all(16),
-    decoration: BoxDecoration(
-      color: Appcolor.softPinkPastel,
-      borderRadius: BorderRadius.circular(18),
-    ),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          title,
-          style: TextStyle(
-            fontWeight: FontWeight.w600,
-            color: Appcolor.textBrownSoft,
-          ),
-        ),
-        const SizedBox(height: 8),
-        child,
-      ],
-    ),
-  );
-
-  InputDecoration _input(String label) => InputDecoration(
-    labelText: label,
-    filled: true,
-    fillColor: Colors.white,
-    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-  );
-  BoxDecoration _box() => BoxDecoration(
-    color: Colors.white,
-    borderRadius: BorderRadius.circular(12),
-    border: Border.all(color: Appcolor.textBrownLight.withOpacity(0.3)),
-  );
-  // Widget _summary(String a, String b)=>Padding(padding: const EdgeInsets.only(bottom: 8), child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children:[Text(a), Text(b, style: const TextStyle(fontWeight: FontWeight.w600))]));
-  void _selectDate() async {
-    final d = await showDatePicker(
-      context: context,
-      firstDate: DateTime.now(),
-      lastDate: DateTime.now().add(const Duration(days: 30)),
-      initialDate: DateTime.now(),
-    );
-    if (d != null) setState(() => selectedDate = d);
-  }
-}
-
-class SummaryRow extends StatelessWidget {
-  final String label;
-  final String value;
-
-  const SummaryRow({super.key, required this.label, required this.value});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(label, style: const TextStyle(fontSize: 14)),
-          Text(
-            value,
-            style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
-            textAlign: TextAlign.right,
-          ),
-        ],
       ),
     );
   }
