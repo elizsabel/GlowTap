@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:glowtap/constant/appcolor.dart';
-import 'package:glowtap/glowtap/view_customer/loginpage.dart';
+import 'package:glowtap/glowtap/constant/appcolor.dart';
+import 'package:glowtap/glowtap/views/auth/loginpage.dart';
 import 'package:glowtap/navigation/bottom_custglow.dart';
 
 class SplashGlowTap extends StatefulWidget {

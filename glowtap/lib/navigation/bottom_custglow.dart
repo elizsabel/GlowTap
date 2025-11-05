@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:glowtap/constant/appcolor.dart';
-import 'package:glowtap/glowtap/view_customer/educationpage.dart';
-import 'package:glowtap/glowtap/view_customer/historypage.dart';
+import 'package:glowtap/glowtap/constant/appcolor.dart';
+import 'package:glowtap/glowtap/views/education/educationpage.dart';
+import 'package:glowtap/glowtap/views/booking/historypage.dart';
 
-import 'package:glowtap/glowtap/view_customer/homepage.dart';
-import 'package:glowtap/glowtap/view_customer/akunpage.dart';
+import 'package:glowtap/glowtap/views/home/homepage.dart';
+import 'package:glowtap/glowtap/views/profile/akunpage.dart';
 
 class BottomNavPage extends StatefulWidget {
   const BottomNavPage({super.key});

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:glowtap/constant/appcolor.dart';
-import 'package:glowtap/glowtap/view_customer/bookingpage.dart';
+import 'package:glowtap/glowtap/constant/appcolor.dart';
+import 'package:glowtap/glowtap/views/booking/bookingpage.dart';
 
 class SkinResultPage extends StatelessWidget {
   final List<int> answers;

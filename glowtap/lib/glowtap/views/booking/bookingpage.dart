@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:glowtap/constant/appcolor.dart';
-import 'package:glowtap/glowtap/view_customer/bookingconfirmpage.dart';
+import 'package:glowtap/glowtap/constant/appcolor.dart';
+import 'package:glowtap/glowtap/views/booking/bookingconfirmpage.dart';
 
-// Halaman Booking untuk memilih tanggal, jam, alamat & catatan
+final Map<String, dynamic> doctorData = {
+  "name": "dr. Salsabila Putri",
+  "title": "Aesthetic Doctor",
+  "experience": "5 Tahun pengalaman",
+  "image": "glowtap/assets/images/glowtaptn.png",
+};
+
 class Bookingpage extends StatefulWidget {
   final String treatmentName;
   final String treatmentPrice;
@@ -18,15 +24,12 @@ class Bookingpage extends StatefulWidget {
 }
 
 class _BookingpagePageState extends State<Bookingpage> {
-  // Variabel untuk menyimpan tanggal & jam yang dipilih user
   DateTime? selectedDate;
   String? selectedTime;
 
-  // Controller untuk input alamat & catatan
   final TextEditingController alamatC = TextEditingController();
   final TextEditingController catatanC = TextEditingController();
 
-  // List pilihan jam yang tersedia
   final List<String> timeSlots = [
     "09:00",
     "10:30",
@@ -36,15 +39,13 @@ class _BookingpagePageState extends State<Bookingpage> {
     "19:00",
   ];
 
-  // Fungsi memilih tanggal (Menampilkan widget kalender bawaan Flutter)
   Future pickDate() async {
     DateTime? date = await showDatePicker(
       context: context,
-      firstDate: DateTime.now(), // tanggal minimal hari ini
-      lastDate: DateTime.now().add(const Duration(days: 30)), // maksimal 30 hari ke depan
+      firstDate: DateTime.now(),
+      lastDate: DateTime.now().add(const Duration(days: 30)),
       initialDate: DateTime.now(),
       builder: (context, child) {
-        // Customize warna kalender sesuai tema GlowTap
         return Theme(
           data: Theme.of(context).copyWith(
             colorScheme: ColorScheme.light(primary: Appcolor.button1),
@@ -57,17 +58,14 @@ class _BookingpagePageState extends State<Bookingpage> {
     if (date != null) setState(() => selectedDate = date);
   }
 
-  // Fungsi untuk lanjut ke halaman konfirmasi pemesanan
   void confirm() {
-    // Validasi → wajib isi tanggal + jam + alamat
     if (selectedDate == null || selectedTime == null || alamatC.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Silakan lengkapi jadwal & alamat dulu ya 💗")),
+        const SnackBar(content: Text("Lengkapi jadwal & alamat dulu ya 💗")),
       );
       return;
     }
 
-    // Jika lengkap → pindah ke halaman konfirmasi
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -83,17 +81,15 @@ class _BookingpagePageState extends State<Bookingpage> {
     );
   }
 
-  // Widget reusable untuk input (alamat & catatan)
   Widget inputField(String label, TextEditingController c, {int maxLines = 1}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(label,
-          style: TextStyle(
-            color: Appcolor.textBrownSoft,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
+            style: TextStyle(
+              color: Appcolor.textBrownSoft,
+              fontWeight: FontWeight.w600,
+            )),
         const SizedBox(height: 6),
         TextField(
           controller: c,
@@ -127,8 +123,55 @@ class _BookingpagePageState extends State<Bookingpage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Pilih Tanggal
-            Text("Tanggal Treatment ✨", style: TextStyle(color: Appcolor.textBrownSoft, fontWeight: FontWeight.w600)),
+
+            // ✅ CARD DOKTER (DITAMBAHKAN)
+            Container(
+              padding: const EdgeInsets.all(16),
+              margin: const EdgeInsets.only(bottom: 28),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: Appcolor.textBrownLight.withOpacity(.25)),
+              ),
+              child: Row(
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(14),
+                    child: Image.asset(
+                      doctorData["image"],
+                      width: 65,
+                      height: 65,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  const SizedBox(width: 14),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(doctorData["name"],
+                            style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w700,
+                                color: Appcolor.textBrownSoft)),
+                        Text(doctorData["title"],
+                            style: TextStyle(
+                                fontSize: 13,
+                                color: Appcolor.textBrownSoft.withOpacity(.7))),
+                        Text(doctorData["experience"],
+                            style: TextStyle(
+                                fontSize: 12,
+                                color: Appcolor.textBrownSoft.withOpacity(.6))),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            // ✅ Pilih Tanggal
+            Text("Tanggal Treatment ✨",
+                style: TextStyle(color: Appcolor.textBrownSoft, fontWeight: FontWeight.w600)),
             const SizedBox(height: 12),
 
             InkWell(
@@ -153,8 +196,9 @@ class _BookingpagePageState extends State<Bookingpage> {
 
             const SizedBox(height: 24),
 
-            // Pilih Jam
-            Text("Pilih Jam ⏰", style: TextStyle(color: Appcolor.textBrownSoft, fontWeight: FontWeight.w600)),
+            // ✅ Pilih Jam
+            Text("Pilih Jam ⏰",
+                style: TextStyle(color: Appcolor.textBrownSoft, fontWeight: FontWeight.w600)),
             const SizedBox(height: 12),
 
             Wrap(
@@ -174,14 +218,13 @@ class _BookingpagePageState extends State<Bookingpage> {
 
             const SizedBox(height: 28),
 
-            // Input Alamat & Catatan
             inputField("Alamat Lengkap", alamatC),
             const SizedBox(height: 16),
 
             inputField("Catatan (Opsional)", catatanC, maxLines: 3),
             const SizedBox(height: 30),
 
-            // Informasi Pembayaran COD
+            // ✅ Informasi Pembayaran COD
             Container(
               padding: const EdgeInsets.all(14),
               decoration: BoxDecoration(
@@ -195,7 +238,7 @@ class _BookingpagePageState extends State<Bookingpage> {
                   const SizedBox(width: 10),
                   Expanded(
                     child: Text(
-                      "Pembayaran dilakukan saat dokter/beautician datang (COD) ✨ Tidak perlu transfer terlebih dahulu 💕",
+                      "Pembayaran dilakukan ketika dokter datang (COD) ✨ Tidak perlu transfer dulu 💕",
                       style: TextStyle(color: Appcolor.textBrownSoft, fontSize: 14, height: 1.4),
                     ),
                   ),
@@ -205,7 +248,6 @@ class _BookingpagePageState extends State<Bookingpage> {
 
             const SizedBox(height: 30),
 
-            // Tombol Konfirmasi
             ElevatedButton(
               onPressed: confirm,
               style: ElevatedButton.styleFrom(

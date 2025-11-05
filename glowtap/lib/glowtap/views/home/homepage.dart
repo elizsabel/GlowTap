@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:glowtap/constant/appcolor.dart';
+import 'package:glowtap/glowtap/constant/appcolor.dart';
 import 'package:glowtap/glowtap/database/page_transition.dart';
 import 'package:glowtap/glowtap/model/customer_model.dart';
 import 'package:glowtap/glowtap/preferences/preference_handler.dart';
-import 'package:glowtap/glowtap/view_customer/bookingpage.dart';
-import 'package:glowtap/glowtap/view_customer/detailtreatmentpage.dart';
-import 'package:glowtap/glowtap/view_customer/journalpage.dart';
-import 'package:glowtap/glowtap/view_customer/skinanalyzer.dart';
+import 'package:glowtap/glowtap/views/booking/bookingpage.dart';
+import 'package:glowtap/glowtap/views/booking/detailtreatmentpage.dart';
+import 'package:glowtap/glowtap/views/journal/journalpage.dart';
+import 'package:glowtap/glowtap/views/analyzer/skinanalyzer.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});

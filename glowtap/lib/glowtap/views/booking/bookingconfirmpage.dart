@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:glowtap/constant/appcolor.dart';
+import 'package:glowtap/glowtap/constant/appcolor.dart';
 import 'package:glowtap/glowtap/database/db_helper.dart';
 
 class BookingConfirmPage extends StatelessWidget {

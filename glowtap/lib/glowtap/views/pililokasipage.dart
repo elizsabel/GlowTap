@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:glowtap/constant/appcolor.dart';
+import 'package:glowtap/glowtap/constant/appcolor.dart';
 
 class PilihLokasiPage extends StatefulWidget {
   const PilihLokasiPage({super.key});

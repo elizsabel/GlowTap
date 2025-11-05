@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:glowtap/constant/appcolor.dart';
+import 'package:glowtap/glowtap/constant/appcolor.dart';
 
 class EdukasiDetailPage extends StatelessWidget {
   final String title;

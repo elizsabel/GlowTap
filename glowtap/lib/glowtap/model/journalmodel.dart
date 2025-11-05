@@ -1,27 +1,27 @@
 class JournalModel {
   int? id;
-  String content; // Isi catatan
-  String date; // Tanggal dibuat
+  String date; // Tanggal catatan
+  String note; // Isi catatan
 
   JournalModel({
     this.id,
-    required this.content,
     required this.date,
+    required this.note,
   });
 
   Map<String, dynamic> toMap() {
     return {
       'id': id,
-      'content': content,
       'date': date,
+      'note': note,
     };
   }
 
   static JournalModel fromMap(Map<String, dynamic> map) {
     return JournalModel(
       id: map['id'],
-      content: map['content'],
       date: map['date'],
+      note: map['note'],
     );
   }
 }

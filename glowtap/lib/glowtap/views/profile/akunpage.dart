@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:glowtap/constant/appcolor.dart';
+import 'package:glowtap/glowtap/constant/appcolor.dart';
 import 'package:glowtap/glowtap/model/customer_model.dart';
 import 'package:glowtap/glowtap/preferences/preference_handler.dart';
-import 'package:glowtap/glowtap/view_customer/editprofilpage.dart';
-import 'package:glowtap/glowtap/view_customer/loginpage.dart';
+import 'package:glowtap/glowtap/views/profile/editprofilpage.dart';
+import 'package:glowtap/glowtap/views/auth/loginpage.dart';
 
 class AkunPage extends StatefulWidget {
   const AkunPage({super.key});

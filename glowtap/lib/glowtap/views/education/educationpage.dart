@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:glowtap/constant/appcolor.dart';
-import 'package:glowtap/glowtap/view_customer/educationdetailpage.dart';
+import 'package:glowtap/glowtap/constant/appcolor.dart';
+import 'package:glowtap/glowtap/views/education/educationdetailpage.dart';
 
 class EdukasiPage extends StatelessWidget {
   const EdukasiPage({super.key});
 
   final List<Map<String, String>> edukasiList = const [
     {
+      
       "title": "Tips Menjaga Skin Barier Tetap Kuat?",
       "content":
           "Skin barrier adalah pelindung utama kulit. Kalau rusak, kulit akan mudah kusam, kering, dan muncul jerawat."
