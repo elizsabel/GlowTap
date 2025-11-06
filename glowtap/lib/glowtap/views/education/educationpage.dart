@@ -11,15 +11,15 @@ class EdukasiPage extends StatelessWidget {
       "title": "Tips Menjaga Skin Barier Tetap Kuat?",
       "content":
           "Skin barrier adalah pelindung utama kulit. Kalau rusak, kulit akan mudah kusam, kering, dan muncul jerawat."
-          "Cara memperbaiki & menjaganya:\n"
-          "1. Gunakan pembersih wajah yang lembut dan hindari sabun keras.\n"
-          "2. Rutin pakai pelembap yang mengandung ceramide dan hyaluronic acid.\n"
-          "3. Selalu aplikasikan sunscreen setiap hari, minimal SPF 30.\n",
+          "Cara memperbaiki & menjaganya:"
+          "1. Gunakan pembersih wajah yang lembut dan hindari sabun keras."
+          "2. Rutin pakai pelembap yang mengandung ceramide dan hyaluronic acid."
+          "3. Selalu aplikasikan sunscreen setiap hari, minimal SPF 30.",
     },
     {
       "title": "Manfaat DNA Salmon",
       "content":
-          "DNA Salmon membantu regenerasi sel kulit, memperbaiki tekstur, dan membuat kulit glowing...",
+          "DNA Salmon membantu regenerasi sel kulit, memperbaiki tekstur, dan membuat kulit glowing.",
     },
     {
       "title": "Perawatan Setelah Treatment",

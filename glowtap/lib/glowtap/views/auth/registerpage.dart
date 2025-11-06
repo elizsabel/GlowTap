@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:glowtap/glowtap/constant/appcolor.dart';
 import 'package:glowtap/glowtap/database/db_helper.dart';
-import 'package:glowtap/glowtap/model/customer_model.dart';
+import 'package:glowtap/glowtap/model/customermodelpage.dart';
 
 class RegisterCustglow extends StatefulWidget {
   const RegisterCustglow({super.key});

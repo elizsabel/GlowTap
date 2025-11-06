@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:glowtap/glowtap/constant/appcolor.dart';
 import 'package:glowtap/glowtap/database/db_helper.dart';
 import 'package:glowtap/glowtap/model/journalmodel.dart';
+import 'package:intl/intl.dart';
 
 class JournalPage extends StatefulWidget {
   const JournalPage({super.key});
@@ -24,10 +25,16 @@ class _JournalPageState extends State<JournalPage> {
     setState(() {});
   }
 
-  // ✅ Buka Form Tambah / Edit
+  //  Format tanggal cantik
+  String getToday() {
+    return DateFormat("dd/MM/yyyy").format(DateTime.now());
+  }
+
+  //  Buka Form Tambah / Edit
   void openJournalForm({JournalModel? journal}) {
-    final TextEditingController noteController =
-        TextEditingController(text: journal?.note ?? "");
+    final TextEditingController noteController = TextEditingController(
+      text: journal?.note ?? "",
+    );
 
     showDialog(
       context: context,
@@ -39,7 +46,9 @@ class _JournalPageState extends State<JournalPage> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                journal == null ? "Tambah Catatan Journal" : "Edit Catatan Journal",
+                journal == null
+                    ? "Tambah Catatan Journal"
+                    : "Edit Catatan Journal",
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -69,7 +78,10 @@ class _JournalPageState extends State<JournalPage> {
                 children: [
                   TextButton(
                     onPressed: () => Navigator.pop(context),
-                    child: Text("Batal", style: TextStyle(color: Appcolor.textBrownSoft)),
+                    child: Text(
+                      "Batal",
+                      style: TextStyle(color: Appcolor.textBrownSoft),
+                    ),
                   ),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
@@ -79,15 +91,15 @@ class _JournalPageState extends State<JournalPage> {
                       if (noteController.text.trim().isEmpty) return;
 
                       if (journal == null) {
-                        // ✅ Tambah Data
+                        //  Tambah Data (CREATE)
                         await DbHelper.addJournal(
                           JournalModel(
-                            date: DateTime.now().toString().substring(0, 16),
+                            date: getToday(),
                             note: noteController.text.trim(),
                           ),
                         );
                       } else {
-                        // ✅ Edit Data
+                        //  Edit Data (UPDATE)
                         await DbHelper.updateJournal(
                           JournalModel(
                             id: journal.id,
@@ -103,7 +115,7 @@ class _JournalPageState extends State<JournalPage> {
                     child: const Text("Simpan"),
                   ),
                 ],
-              )
+              ),
             ],
           ),
         ),
@@ -111,17 +123,23 @@ class _JournalPageState extends State<JournalPage> {
     );
   }
 
-  // ✅ Konfirmasi Hapus
+  //  Hapus Data (DELETE)
   void confirmDelete(int id) {
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
-        title: Text("Hapus Catatan?", style: TextStyle(color: Appcolor.textBrownSoft)),
+        title: Text(
+          "Hapus Catatan?",
+          style: TextStyle(color: Appcolor.textBrownSoft),
+        ),
         content: const Text("Catatan ini akan dihapus permanen 💗"),
         actions: [
           TextButton(
-            child: Text("Batal", style: TextStyle(color: Appcolor.textBrownSoft)),
+            child: Text(
+              "Batal",
+              style: TextStyle(color: Appcolor.textBrownSoft),
+            ),
             onPressed: () => Navigator.pop(context),
           ),
           ElevatedButton(
@@ -146,7 +164,10 @@ class _JournalPageState extends State<JournalPage> {
       backgroundColor: Appcolor.softPinkPastel,
       appBar: AppBar(
         backgroundColor: Appcolor.button1,
-        title: const Text("Journal Kulitmu 💗", style: TextStyle(color: Colors.white)),
+        title: const Text(
+          "Journal Kulitmu 💗",
+          style: TextStyle(color: Colors.white),
+        ),
         centerTitle: true,
       ),
 
@@ -159,7 +180,7 @@ class _JournalPageState extends State<JournalPage> {
       body: journals.isEmpty
           ? Center(
               child: Text(
-                "Belum ada catatan.\nMulai cerita perjalanan kulitmu ✨",
+                "Belum ada catatan. Mulai cerita perjalanan kulitmu ✨",
                 textAlign: TextAlign.center,
                 style: TextStyle(color: Appcolor.textBrownSoft),
               ),
@@ -175,18 +196,28 @@ class _JournalPageState extends State<JournalPage> {
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(18),
-                    border: Border.all(color: Appcolor.textBrownLight.withOpacity(.25)),
+                    border: Border.all(
+                      color: Appcolor.textBrownLight.withOpacity(.25),
+                    ),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(item.date,
-                          style: TextStyle(
-                              fontSize: 12,
-                              color: Appcolor.textBrownSoft.withOpacity(.6))),
+                      Text(
+                        item.date,
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Appcolor.textBrownSoft.withOpacity(.6),
+                        ),
+                      ),
                       const SizedBox(height: 6),
-                      Text(item.note,
-                          style: TextStyle(fontSize: 15, color: Appcolor.textBrownSoft)),
+                      Text(
+                        item.note,
+                        style: TextStyle(
+                          fontSize: 15,
+                          color: Appcolor.textBrownSoft,
+                        ),
+                      ),
                       const SizedBox(height: 14),
 
                       Row(
@@ -194,15 +225,20 @@ class _JournalPageState extends State<JournalPage> {
                         children: [
                           TextButton(
                             onPressed: () => openJournalForm(journal: item),
-                            child: Text("Edit", style: TextStyle(color: Appcolor.button1)),
+                            child: Text(
+                              "Edit",
+                              style: TextStyle(color: Appcolor.button1),
+                            ),
                           ),
                           TextButton(
                             onPressed: () => confirmDelete(item.id!),
-                            child: Text("Hapus",
-                                style: TextStyle(color: Colors.red.shade400)),
+                            child: Text(
+                              "Hapus",
+                              style: TextStyle(color: Colors.red.shade400),
+                            ),
                           ),
                         ],
-                      )
+                      ),
                     ],
                   ),
                 );

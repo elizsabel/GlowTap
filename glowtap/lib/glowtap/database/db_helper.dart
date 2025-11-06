@@ -41,7 +41,7 @@ class DbHelper {
         await db.execute("""
         CREATE TABLE $tableJournal(
           id INTEGER PRIMARY KEY AUTOINCREMENT,
-          content TEXT,
+          note TEXT,
           date TEXT
         )
         """);
@@ -62,10 +62,17 @@ class DbHelper {
   // CUSTOMER
   static Future<void> registerUser(CustomerModel user) async {
     final database = await db();
-    await database.insert(tableCustomer, user.toMap(), conflictAlgorithm: ConflictAlgorithm.replace);
+    await database.insert(
+      tableCustomer,
+      user.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
   }
 
-  static Future<CustomerModel?> loginUser({required String email, required String password}) async {
+  static Future<CustomerModel?> loginUser({
+    required String email,
+    required String password,
+  }) async {
     final database = await db();
     final results = await database.query(
       tableCustomer,
@@ -78,7 +85,12 @@ class DbHelper {
 
   static Future<void> updateCustomer(CustomerModel customer) async {
     final database = await db();
-    await database.update(tableCustomer, customer.toMap(), where: "id = ?", whereArgs: [customer.id]);
+    await database.update(
+      tableCustomer,
+      customer.toMap(),
+      where: "id = ?",
+      whereArgs: [customer.id],
+    );
   }
 
   // HISTORY
@@ -110,12 +122,21 @@ class DbHelper {
 
   static Future<int> updateHistoryStatus(int id, String status) async {
     final database = await db();
-    return await database.update(tableHistory, {'status': status}, where: "id = ?", whereArgs: [id]);
+    return await database.update(
+      tableHistory,
+      {'status': status},
+      where: "id = ?",
+      whereArgs: [id],
+    );
   }
 
   static Future<int> deleteHistory(int id) async {
     final database = await db();
-    return await database.delete(tableHistory, where: "id = ?", whereArgs: [id]);
+    return await database.delete(
+      tableHistory,
+      where: "id = ?",
+      whereArgs: [id],
+    );
   }
 
   // JOURNAL
@@ -132,11 +153,20 @@ class DbHelper {
 
   static Future<int> updateJournal(JournalModel j) async {
     final database = await db();
-    return await database.update(tableJournal, j.toMap(), where: "id = ?", whereArgs: [j.id]);
+    return await database.update(
+      tableJournal,
+      j.toMap(),
+      where: "id = ?",
+      whereArgs: [j.id],
+    );
   }
 
   static Future<int> deleteJournal(int id) async {
     final database = await db();
-    return await database.delete(tableJournal, where: "id = ?", whereArgs: [id]);
+    return await database.delete(
+      tableJournal,
+      where: "id = ?",
+      whereArgs: [id],
+    );
   }
 }

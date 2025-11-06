@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:glowtap/glowtap/constant/appcolor.dart';
 import 'package:glowtap/glowtap/database/db_helper.dart';
-import 'package:glowtap/glowtap/model/customer_model.dart';
+import 'package:glowtap/glowtap/model/customermodelpage.dart';
 import 'package:glowtap/glowtap/preferences/preference_handler.dart';
 
 class EditProfilPage extends StatefulWidget {
@@ -12,8 +12,10 @@ class EditProfilPage extends StatefulWidget {
 }
 
 class _EditProfilPageState extends State<EditProfilPage> {
+  //  Menampung data user yang sedang login
   CustomerModel? user;
 
+  //  Controller untuk mengisi dan mengambil input dari TextField
   final nameC = TextEditingController();
   final phoneC = TextEditingController();
   final passC = TextEditingController();
@@ -21,37 +23,45 @@ class _EditProfilPageState extends State<EditProfilPage> {
   @override
   void initState() {
     super.initState();
-    loadUser();
+    loadUser(); //  Memanggil data user saat halaman dibuka pertama kali
   }
 
+  //  Mengambil data user dari SharedPreferences dan menampilkannya ke TextField
   void loadUser() async {
     user = await PreferenceHandler.getUser();
     if (user != null) {
-      nameC.text = user!.name;
+      nameC.text = user!.username;
       phoneC.text = user!.phone;
       passC.text = user!.password;
-      setState(() {});
+      setState(() {}); //  Update tampilan
     }
   }
 
+  //  Fungsi untuk menyimpan perubahan profil
   void saveProfile() async {
     if (user == null) return;
 
+    //  Membuat object CustomerModel yang sudah diperbarui
     final updated = CustomerModel(
       id: user!.id,
-      username: user!.username,
+      username: user!.name,
       name: nameC.text.trim(),
       email: user!.email,
       phone: phoneC.text.trim(),
       password: passC.text.trim(),
     );
 
+    //  Update ke SQLite
     await DbHelper.updateCustomer(updated);
+
+    //  Update juga ke SharedPreferences agar data profil di halaman lain ikut berubah
     await PreferenceHandler.saveUser(updated);
 
+    //  Kembali ke halaman sebelum ini & beri tanda berhasil untuk refresh
     if (!mounted) return;
-    Navigator.pop(context, true); // ✅ penting untuk refresh
+    Navigator.pop(context, true);
 
+    //  Notifikasi berhasil
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text("Profil berhasil diperbarui ✨")),
     );
@@ -59,6 +69,7 @@ class _EditProfilPageState extends State<EditProfilPage> {
 
   @override
   Widget build(BuildContext context) {
+    //  Saat user belum terambil, tampilkan loading
     if (user == null) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
@@ -74,10 +85,13 @@ class _EditProfilPageState extends State<EditProfilPage> {
           style: TextStyle(color: Appcolor.textBrownSoft),
         ),
       ),
+
+      //  Isi halaman
       body: Padding(
         padding: const EdgeInsets.all(24),
         child: ListView(
           children: [
+            //  Avatar menggunakan huruf pertama nama user
             Center(
               child: CircleAvatar(
                 radius: 48,
@@ -94,13 +108,23 @@ class _EditProfilPageState extends State<EditProfilPage> {
             ),
 
             const SizedBox(height: 24),
+
+            //  Field Nama
             _field("Nama Lengkap", nameC),
+
             const SizedBox(height: 16),
+
+            //  Field Nomor HP
             _field("Nomor Handphone", phoneC),
+
             const SizedBox(height: 16),
+
+            //  Field Password (disembunyikan)
             _field("Password", passC, isPass: true),
 
             const SizedBox(height: 32),
+
+            //  Tombol Simpan
             ElevatedButton(
               onPressed: saveProfile,
               style: ElevatedButton.styleFrom(
@@ -125,10 +149,12 @@ class _EditProfilPageState extends State<EditProfilPage> {
     );
   }
 
+  //  Widget Custom untuk Form Input
   Widget _field(String label, TextEditingController c, {bool isPass = false}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        // Label judul input
         Text(
           label,
           style: TextStyle(
@@ -137,9 +163,11 @@ class _EditProfilPageState extends State<EditProfilPage> {
           ),
         ),
         const SizedBox(height: 6),
+
+        // TextField dengan style lembut GlowTap
         TextField(
           controller: c,
-          obscureText: isPass,
+          obscureText: isPass, //  Menyembunyikan password
           decoration: InputDecoration(
             filled: true,
             fillColor: Colors.white,

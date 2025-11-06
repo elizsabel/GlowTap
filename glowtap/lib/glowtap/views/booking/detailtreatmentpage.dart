@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:glowtap/glowtap/constant/appcolor.dart';
 import 'package:glowtap/glowtap/views/booking/bookingpage.dart';
+
 class DetailTreatmentPage extends StatelessWidget {
   final Map<String, dynamic> data;
   const DetailTreatmentPage({super.key, required this.data});
 
   @override
   Widget build(BuildContext context) {
-
-    // ✅ Fallback aman
-    final List<dynamic> benefits =
-        data["benefit"] is List ? data["benefit"] : ["Tidak ada informasi manfaat"];
+    //  Fallback aman
+    // final List<dynamic> benefits =
+    data["benefit"] is List ? data["benefit"] : ["Tidak ada informasi manfaat"];
     final String duration = data["duration"] ?? "±45 menit";
     final String painLevel = data["painLevel"] ?? "Ringan";
 
@@ -21,7 +21,10 @@ class DetailTreatmentPage extends StatelessWidget {
         centerTitle: true,
         title: Text(
           data["title"],
-          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+          style: const TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.w600,
+          ),
         ),
       ),
 
@@ -30,7 +33,6 @@ class DetailTreatmentPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-
             Text(data["emoji"], style: const TextStyle(fontSize: 78)),
             const SizedBox(height: 16),
 
@@ -64,7 +66,9 @@ class DetailTreatmentPage extends StatelessWidget {
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(18),
-                border: Border.fromBorderSide(BorderSide(color: Appcolor.textBrownLight.withOpacity(.25))),
+                border: Border.fromBorderSide(
+                  BorderSide(color: Appcolor.textBrownLight.withOpacity(.25)),
+                ),
               ),
               child: Text(
                 data["detail"],
@@ -78,45 +82,45 @@ class DetailTreatmentPage extends StatelessWidget {
 
             const SizedBox(height: 26),
 
-            // BENEFIT ✅ Fallback aman
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(18),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(18),
-                border: Border.fromBorderSide(BorderSide(color: Appcolor.textBrownLight.withOpacity(.25))),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text("Manfaat 🌸",
-                      style: TextStyle(
-                        fontSize: 17,
-                        fontWeight: FontWeight.w600,
-                        color: Appcolor.textBrownSoft,
-                      )),
-                  const SizedBox(height: 8),
-                  ...benefits.map((item) => Padding(
-                        padding: const EdgeInsets.only(bottom: 4),
-                        child: Text("• $item",
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Appcolor.textBrownSoft.withOpacity(.9),
-                            )),
-                      )),
-                ],
-              ),
-            ),
+            // BENEFIT  Fallback aman
+            // Container(
+            //   width: double.infinity,
+            //   padding: const EdgeInsets.all(18),
+            //   decoration: BoxDecoration(
+            //     color: Colors.white,
+            //     borderRadius: BorderRadius.circular(18),
+            //     border: Border.fromBorderSide(BorderSide(color: Appcolor.textBrownLight.withOpacity(.25))),
+            //   ),
+            //   child: Column(
+            //     crossAxisAlignment: CrossAxisAlignment.start,
+            //     children: [
+            //       Text("Manfaat 🌸",
+            //           style: TextStyle(
+            //             fontSize: 17,
+            //             fontWeight: FontWeight.w600,
+            //             color: Appcolor.textBrownSoft,
+            //           )),
+            //       const SizedBox(height: 8),
+            //       ...benefits.map((item) => Padding(
+            //             padding: const EdgeInsets.only(bottom: 4),
+            //             child: Text("• $item",
+            //                 style: TextStyle(
+            //                   fontSize: 14,
+            //                   color: Appcolor.textBrownSoft.withOpacity(.9),
+            //                 )),
+            //           )),
+            //     ],
+            //   ),
+            // ),
 
-            const SizedBox(height: 26),
+            // const SizedBox(height: 26),
 
-            // DURATION ✅
+            // DURATION 
             _infoBox("Durasi Treatment", duration),
 
             const SizedBox(height: 26),
 
-            // PAINLEVEL ✅
+            // PAINLEVEL 
             _infoBox("Tingkat Rasa Sakit", painLevel),
 
             const SizedBox(height: 26),
@@ -130,7 +134,10 @@ class DetailTreatmentPage extends StatelessWidget {
               ),
               child: Column(
                 children: [
-                  Text("Harga Treatment", style: TextStyle(color: Appcolor.textBrownSoft)),
+                  Text(
+                    "Harga Treatment",
+                    style: TextStyle(color: Appcolor.textBrownSoft),
+                  ),
                   const SizedBox(height: 6),
                   Text(
                     data["price"],
@@ -139,7 +146,7 @@ class DetailTreatmentPage extends StatelessWidget {
                       fontWeight: FontWeight.w800,
                       color: Appcolor.button1,
                     ),
-                  )
+                  ),
                 ],
               ),
             ),
@@ -162,9 +169,14 @@ class DetailTreatmentPage extends StatelessWidget {
                 backgroundColor: Appcolor.button1,
                 foregroundColor: Colors.white,
                 minimumSize: const Size(double.infinity, 52),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(14),
+                ),
               ),
-              child: const Text("Book Treatment Sekarang ✨", style: TextStyle(fontSize: 16)),
+              child: const Text(
+                "Book Treatment Sekarang ✨",
+                style: TextStyle(fontSize: 16),
+              ),
             ),
           ],
         ),
@@ -181,8 +193,14 @@ class DetailTreatmentPage extends StatelessWidget {
         borderRadius: BorderRadius.circular(18),
         border: Border.fromBorderSide(BorderSide()),
       ),
-      child: Text("$label : $value",
-          style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Appcolor.textBrownSoft)),
+      child: Text(
+        "$label : $value",
+        style: TextStyle(
+          fontSize: 14,
+          fontWeight: FontWeight.w500,
+          color: Appcolor.textBrownSoft,
+        ),
+      ),
     );
   }
 }

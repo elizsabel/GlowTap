@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:glowtap/glowtap/constant/appcolor.dart';
-import 'package:glowtap/glowtap/model/customer_model.dart';
+import 'package:glowtap/glowtap/model/customermodelpage.dart';
 import 'package:glowtap/glowtap/preferences/preference_handler.dart';
 import 'package:glowtap/glowtap/views/profile/editprofilpage.dart';
 import 'package:glowtap/glowtap/views/auth/loginpage.dart';
@@ -13,10 +13,12 @@ class AkunPage extends StatefulWidget {
 }
 
 class _AkunPageState extends State<AkunPage> {
+  ///  Mengambil data user yang sedang login dari SharedPreferences
   Future<CustomerModel?> _getUser() async {
     return await PreferenceHandler.getUser();
   }
 
+  ///  Mengambil inisial nama untuk Avatar.
   String _initial(String? name) {
     if (name == null || name.trim().isEmpty) return "?";
     final parts = name.trim().split(" ");
@@ -33,11 +35,13 @@ class _AkunPageState extends State<AkunPage> {
         centerTitle: true,
         title: const Text("Profil Saya", style: TextStyle(color: Colors.white)),
       ),
+
+      ///  FutureBuilder digunakan karena data user diambil secara async
       body: FutureBuilder<CustomerModel?>(
         future: _getUser(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
-            return const Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator()); // loading
           }
 
           final user = snapshot.data!;
@@ -47,6 +51,7 @@ class _AkunPageState extends State<AkunPage> {
               children: [
                 const SizedBox(height: 40),
 
+                ///  Avatar berupa inisial nama user
                 CircleAvatar(
                   radius: 48,
                   backgroundColor: Appcolor.button1.withOpacity(.85),
@@ -62,6 +67,7 @@ class _AkunPageState extends State<AkunPage> {
 
                 const SizedBox(height: 14),
 
+                ///  Nama user
                 Text(
                   user.name.isEmpty ? "-" : user.name,
                   style: TextStyle(
@@ -71,6 +77,7 @@ class _AkunPageState extends State<AkunPage> {
                   ),
                 ),
 
+                ///  Email dan telepon
                 Text(
                   user.email,
                   style: TextStyle(
@@ -90,6 +97,7 @@ class _AkunPageState extends State<AkunPage> {
 
                 const SizedBox(height: 30),
 
+                ///  Card Menu Aksi (Edit Profil & Logout)
                 Container(
                   width: double.infinity,
                   margin: const EdgeInsets.symmetric(horizontal: 24),
@@ -107,6 +115,7 @@ class _AkunPageState extends State<AkunPage> {
                   ),
                   child: Column(
                     children: [
+                      ///  Tombol Edit Profil
                       _menuButton(
                         icon: Icons.person_outline,
                         label: "Edit Profil",
@@ -118,19 +127,23 @@ class _AkunPageState extends State<AkunPage> {
                             ),
                           );
 
+                          ///  Setelah kembali dari Edit Profil → Refresh tampilan
                           if (result == true) {
-                            setState(
-                              () {},
-                            ); // ✅ LANGSUNG REFRESH TANPA PINDAH TAB
+                            setState(() {});
                           }
                         },
                       ),
+
                       const Divider(),
+
+                      ///  Tombol Logout
                       _menuButton(
                         icon: Icons.logout_outlined,
                         label: "Logout",
                         onTap: () async {
-                          await PreferenceHandler.clearSession();
+                          await PreferenceHandler.clearSession(); // hapus session login
+
+                          ///  Arahkan ke halaman login + hapus riwayat navigasi
                           Navigator.pushAndRemoveUntil(
                             context,
                             MaterialPageRoute(
@@ -151,6 +164,7 @@ class _AkunPageState extends State<AkunPage> {
     );
   }
 
+  ///  Widget Reusable untuk item menu
   Widget _menuButton({
     required IconData icon,
     required String label,

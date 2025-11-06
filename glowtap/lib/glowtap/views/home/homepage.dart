@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:glowtap/glowtap/constant/appcolor.dart';
-import 'package:glowtap/glowtap/database/page_transition.dart';
-import 'package:glowtap/glowtap/model/customer_model.dart';
+import 'package:glowtap/glowtap/model/customermodelpage.dart';
 import 'package:glowtap/glowtap/preferences/preference_handler.dart';
-import 'package:glowtap/glowtap/views/booking/bookingpage.dart';
 import 'package:glowtap/glowtap/views/booking/detailtreatmentpage.dart';
 import 'package:glowtap/glowtap/views/journal/journalpage.dart';
 import 'package:glowtap/glowtap/views/analyzer/skinanalyzer.dart';
@@ -16,53 +14,64 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  CustomerModel? user; // Menyimpan data user yang sedang login
+  CustomerModel? user; // Menampung data user setelah login
 
   @override
   void initState() {
     super.initState();
-    loadUser(); // Memanggil fungsi untuk mengambil data user tersimpan
+    loadUser(); // Ambil user dari SharedPreferences
   }
 
   void loadUser() async {
-    // Mengambil data user dari SharedPreferences
-    user = await PreferenceHandler.getUser();
-    setState(() {}); // Update UI ketika data user sudah didapat
+    user = await PreferenceHandler.getUser(); // Load user
+    if (mounted) setState(() {}); // Update UI bila halaman masih aktif
   }
 
-  // Data dummy treatment yang ditampilkan di homepage
+  // Data treatment (dummy) untuk ditampilkan di homepage
   final List<Map<String, dynamic>> treatmentData = [
     {
       "emoji": "🧬",
       "title": "DNA Salmon Injection",
       "description": "Regenerasi kulit untuk wajah kenyal & cerah",
-      "detail": "DNA Salmon Injection menggunakan ekstrak DNA salmon.",
+      "detail":
+          "DNA Salmon Injection adalah treatment regenerasi kulit yang menggunakan ekstrak DNA ikan salmon yang kaya akan polinukleotida. "
+          "Perawatan ini membantu memperbaiki jaringan kulit, meningkatkan produksi kolagen, memperbaiki tekstur kulit, "
+          "menyamarkan pori-pori, serta membantu mengatasi kulit kusam dan bekas jerawat. "
+          "Hasilnya: kulit terasa lebih kenyal, lembab, dan glowing dari dalam.",
       "price": "Rp 850.000",
     },
     {
       "emoji": "💧",
       "title": "Profhilo Skin Booster",
       "description": "Hidrasi mendalam yang bikin glowing maksimal",
-      "detail": "Profhilo mengandung HA konsentrasi tinggi.",
+      "detail":
+          "Profhilo adalah skin booster premium dengan Hyaluronic Acid konsentrasi tinggi yang bekerja "
+          "untuk menghidrasi, mengencangkan, dan membuat kulit tampak 'glass skin'.\n\n"
+          "Cocok untuk kulit kering, kusam, dan mulai kendur.",
       "price": "Rp 3.200.000",
     },
     {
       "emoji": "🌱",
       "title": "Rejuran Healing",
       "description": "Memperbaiki tekstur & memperkuat skin barrier",
-      "detail": "Rejuran menggunakan polynucleotide.",
+      "detail":
+          "Rejuran menggunakan Polynucleotide (PN) dari DNA salmon yang membantu memperbaiki jaringan kulit rusak, "
+          "mengurangi redness, memperbaiki pori, dan memperkuat skin barrier.\n\n"
+          "Cocok untuk kulit sensitif dan bekas jerawat.",
       "price": "Rp 1.950.000",
     },
     {
       "emoji": "🎀",
       "title": "Botox Anti-Wrinkle",
       "description": "Kurangi garis halus & kerutan",
-      "detail": "Botox merilekskan otot penyebab kerutan.",
+      "detail":
+          "Botox merilekskan otot wajah agar garis ekspresi berkurang tanpa menghilangkan ekspresi natural. "
+          "Hasil terlihat 3 sampai 7 hari dan bertahan 3 sampai 6 bulan.",
       "price": "Rp 1.200.000 / area",
     },
   ];
 
-  // Navigasi ke halaman detail treatment
+  // Berpindah ke halaman detail treatment
   void goToDetail(Map<String, dynamic> t) {
     Navigator.push(
       context,
@@ -72,17 +81,28 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    // Tampilkan loading jika user belum selesai diambil
+    if (user == null) {
+      return const Scaffold(
+        backgroundColor: Color(0xFFFFF6FA),
+        body: Center(child: CircularProgressIndicator(color: Colors.pink)),
+      );
+    }
+
+    // Setelah user berhasil di-load → tampilkan halaman
     return Scaffold(
       backgroundColor: Appcolor.softPinkPastel,
       body: SafeArea(
         child: ListView(
-          padding: EdgeInsets.zero, // Agar konten mulai dari paling atas
+          padding: EdgeInsets.zero,
           children: [
-            // Bagian Header (sapaan user)
+           
+            // HEADER (Sapaan User)
+            
             Container(
               padding: const EdgeInsets.fromLTRB(24, 30, 24, 28),
               decoration: BoxDecoration(
-                color: Appcolor.button1, // Warna soft pink
+                color: Appcolor.button1, // Warna latar header
                 borderRadius: const BorderRadius.only(
                   bottomLeft: Radius.circular(32),
                   bottomRight: Radius.circular(32),
@@ -96,9 +116,8 @@ class _HomePageState extends State<HomePage> {
                     style: TextStyle(color: Colors.white.withOpacity(.9)),
                   ),
                   const SizedBox(height: 6),
-                  // Jika user login → tampilkan nama, jika tidak → tampilkan "Glowers"
                   Text(
-                    user != null ? "Hai, ${user!.name} ✨" : "Hai, Glowers ✨",
+                    "Hai, ${user!.name} ✨", // nama user tampil
                     style: const TextStyle(
                       fontSize: 24,
                       color: Colors.white,
@@ -115,7 +134,9 @@ class _HomePageState extends State<HomePage> {
 
             const SizedBox(height: 20),
 
-            // Menu Skin Analyzer & Journal Skin
+            
+            // 🧴 FITUR CEPAT (Skin Analyzer + Journal Skin)
+            
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24),
               child: Row(
@@ -126,7 +147,7 @@ class _HomePageState extends State<HomePage> {
                       label: "Skin Analyzer",
                       onTap: () => Navigator.push(
                         context,
-                        softTransition(const SkinAnalyzerPage()),
+                        MaterialPageRoute(builder: (_) => const SkinAnalyzerPage()),
                       ),
                     ),
                   ),
@@ -137,7 +158,7 @@ class _HomePageState extends State<HomePage> {
                       label: "Journal Skin",
                       onTap: () => Navigator.push(
                         context,
-                        softTransition(const JournalPage()),
+                        MaterialPageRoute(builder: (_) => const JournalPage()),
                       ),
                     ),
                   ),
@@ -147,7 +168,9 @@ class _HomePageState extends State<HomePage> {
 
             const SizedBox(height: 24),
 
-            // Judul Section Treatment
+            
+            // 💆‍♀️ LIST TREATMENT POPULER
+            
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24),
               child: Text(
@@ -162,16 +185,14 @@ class _HomePageState extends State<HomePage> {
 
             const SizedBox(height: 14),
 
-            // List treatment berbentuk kartu scroll horizontal
             SizedBox(
-              height: 300, // Tinggi list card
+              height: 300,
               child: ListView.separated(
                 scrollDirection: Axis.horizontal,
-                physics: const BouncingScrollPhysics(), // Scroll lebih lembut
+                physics: const BouncingScrollPhysics(),
                 padding: const EdgeInsets.symmetric(horizontal: 24),
                 itemCount: treatmentData.length,
-                separatorBuilder: (_, __) =>
-                    const SizedBox(width: 16), // Jarak antar card
+                separatorBuilder: (_, __) => const SizedBox(width: 16),
                 itemBuilder: (_, i) => TreatmentCard(
                   data: treatmentData[i],
                   onDetail: () => goToDetail(treatmentData[i]),
@@ -184,14 +205,14 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  // Widget kecil untuk tombol fitur
+  // Widget kartu fitur cepat
   Widget _featureCard({
     required String icon,
     required String label,
     required VoidCallback onTap,
   }) {
     return InkWell(
-      onTap: onTap, // Klik → pindah halaman
+      onTap: onTap,
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
@@ -217,17 +238,19 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-// Widget Card Treatment
+// =======================================================
+// 🎀 KARTU TREATMENT
+// =======================================================
 class TreatmentCard extends StatelessWidget {
-  final Map<String, dynamic> data;
-  final VoidCallback onDetail;
+  final Map<String, dynamic> data; // Info Treatment
+  final VoidCallback onDetail; // Fungsi buka detail
 
   const TreatmentCard({super.key, required this.data, required this.onDetail});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 230, // Lebar card
+      width: 230,
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
         color: Colors.white,
@@ -244,24 +267,17 @@ class TreatmentCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            data["emoji"],
-            style: const TextStyle(fontSize: 48),
-          ), // Emoji icon besar
+          Text(data["emoji"], style: const TextStyle(fontSize: 48)),
           const SizedBox(height: 14),
-
           Text(
-            data["title"], // Nama treatment
+            data["title"],
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w700,
               color: Appcolor.textBrownSoft,
             ),
           ),
-
           const SizedBox(height: 8),
-
-          // Deskripsi treatment maksimal 3 baris
           Text(
             data["description"],
             maxLines: 3,
@@ -272,10 +288,7 @@ class TreatmentCard extends StatelessWidget {
               height: 1.3,
             ),
           ),
-
           const Spacer(),
-
-          // Harga + tombol detail
           Row(
             children: [
               Expanded(
@@ -307,5 +320,3 @@ class TreatmentCard extends StatelessWidget {
     );
   }
 }
-
-

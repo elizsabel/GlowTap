@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:glowtap/glowtap/constant/appcolor.dart';
-import 'package:glowtap/navigation/bottom_custglow.dart';
+import 'package:glowtap/navigation/bottompage.dart';
 import 'package:glowtap/glowtap/database/db_helper.dart';
 import 'package:glowtap/glowtap/preferences/preference_handler.dart';
 import 'package:glowtap/glowtap/views/auth/registerpage.dart';

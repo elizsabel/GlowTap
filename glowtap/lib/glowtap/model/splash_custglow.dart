@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:glowtap/glowtap/constant/appcolor.dart';
-import 'package:glowtap/glowtap/views/auth/loginpage.dart';
+import 'package:glowtap/glowtap/preferences/preference_handler.dart';
 import 'package:glowtap/navigation/bottom_custglow.dart';
+import 'package:glowtap/glowtap/views/auth/loginpage.dart';
 
 class SplashGlowTap extends StatefulWidget {
   const SplashGlowTap({super.key});
@@ -27,12 +28,26 @@ class _SplashGlowTapState extends State<SplashGlowTap>
     _fade = CurvedAnimation(parent: _controller, curve: Curves.easeInOut);
     _controller.forward();
 
-    Future.delayed(const Duration(seconds: 3), () {
+    _checkLogin();
+  }
+
+  Future<void> _checkLogin() async {
+    await Future.delayed(const Duration(seconds: 2)); // animasi dulu
+    final isLoggedIn = await PreferenceHandler.getLogin();
+
+    if (!mounted) return;
+
+    if (isLoggedIn) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const BottomNavPage()),
+      );
+    } else {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (_) => const LoginCustGlow()),
       );
-    });
+    }
   }
 
   @override
@@ -42,15 +57,7 @@ class _SplashGlowTapState extends State<SplashGlowTap>
       body: Center(
         child: FadeTransition(
           opacity: _fade,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // LOGO
-              Image.asset("assets/images/glowtaptn.png", width: 300),
-
-              const SizedBox(height: 18),
-            ],
-          ),
+          child: Image.asset("assets/images/glowtaptn.png", width: 260),
         ),
       ),
     );
