@@ -20,7 +20,7 @@ class CustomerModel {
   Map<String, dynamic> toMap() {
     return {
       'id': id,
-      'username': username, // ✅ MASUKKAN
+      'username': username, // MASUKKAN
       'name': name,
       'email': email,
       'phone': phone,
@@ -31,7 +31,7 @@ class CustomerModel {
   factory CustomerModel.fromMap(Map<String, dynamic> map) {
     return CustomerModel(
       id: map['id'],
-      username: map['username'] ?? '', // ✅ AMBIL DARI DATABASE
+      username: map['username'] ?? '', // AMBIL DARI DATABASE
       name: map['name'],
       email: map['email'],
       phone: map['phone'],

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:glowtap/glowtap/model/splash_custglow.dart';
-import 'package:glowtap/navigation/bottom_custglow.dart';
+import 'package:glowtap/glowtap/model/splashscreenpage.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

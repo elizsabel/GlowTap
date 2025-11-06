@@ -1,4 +1,4 @@
-import 'package:glowtap/glowtap/model/customer_model.dart';
+import 'package:glowtap/glowtap/model/customermodelpage.dart';
 import 'package:glowtap/glowtap/model/journalmodel.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
