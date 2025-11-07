@@ -5,6 +5,7 @@ import 'package:glowtap/glowtap/preferences/preference_handler.dart';
 import 'package:glowtap/glowtap/views/booking/detailtreatmentpage.dart';
 import 'package:glowtap/glowtap/views/journal/journalpage.dart';
 import 'package:glowtap/glowtap/views/analyzer/skinanalyzer.dart';
+import 'package:glowtap/glowtap/chat/chatpage.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -83,22 +84,54 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     // Tampilkan loading jika user belum selesai diambil
     if (user == null) {
-      return const Scaffold(
-        backgroundColor: Color(0xFFFFF6FA),
-        body: Center(child: CircularProgressIndicator(color: Colors.pink)),
+      return Scaffold(
+        // floatingActionButton: FloatingActionButton(
+        //   backgroundColor: Appcolor.button1,
+        //   elevation: 8,
+        //   child: const Icon(
+        //     Icons.chat_bubble,
+        //     color: Appcolor.softPinkPastel,
+        //     size: 26,
+        //   ),
+        //   onPressed: () {
+        //     Navigator.push(
+        //       context,
+        //       MaterialPageRoute(builder: (context) => const Chatpage()),
+        //     );
+        //   },
+        // ),
+        // floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+        backgroundColor: const Color(0xFFFFF6FA),
+        body: const Center(
+          child: CircularProgressIndicator(color: Colors.pink),
+        ),
       );
     }
 
     // Setelah user berhasil di-load → tampilkan halaman
     return Scaffold(
-      backgroundColor: Appcolor.softPinkPastel,
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Appcolor.button1,
+        elevation: 8,
+        child: const Icon(
+          Icons.chat_bubble,
+          color: Appcolor.softPinkPastel,
+          size: 26,
+        ),
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const Chatpage()),
+          );
+        },
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      backgroundColor: Appcolor.button1.withOpacity(0.0),
       body: SafeArea(
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
-           
             // HEADER (Sapaan User)
-            
             Container(
               padding: const EdgeInsets.fromLTRB(24, 30, 24, 28),
               decoration: BoxDecoration(
@@ -134,9 +167,7 @@ class _HomePageState extends State<HomePage> {
 
             const SizedBox(height: 20),
 
-            
-            // 🧴 FITUR CEPAT (Skin Analyzer + Journal Skin)
-            
+            //  FITUR CEPAT (Skin Analyzer + Journal Skin)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24),
               child: Row(
@@ -144,10 +175,12 @@ class _HomePageState extends State<HomePage> {
                   Expanded(
                     child: _featureCard(
                       icon: "🔍",
-                      label: "Skin Analyzer",
+                      label: "Analisis Kulit",
                       onTap: () => Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (_) => const SkinAnalyzerPage()),
+                        MaterialPageRoute(
+                          builder: (_) => const SkinAnalyzerPage(),
+                        ),
                       ),
                     ),
                   ),
@@ -155,7 +188,7 @@ class _HomePageState extends State<HomePage> {
                   Expanded(
                     child: _featureCard(
                       icon: "📔",
-                      label: "Journal Skin",
+                      label: "Jurnal Kulit",
                       onTap: () => Navigator.push(
                         context,
                         MaterialPageRoute(builder: (_) => const JournalPage()),
@@ -168,9 +201,7 @@ class _HomePageState extends State<HomePage> {
 
             const SizedBox(height: 24),
 
-            
-            // 💆‍♀️ LIST TREATMENT POPULER
-            
+            //  LIST TREATMENT POPULER
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24),
               child: Text(
@@ -238,9 +269,7 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-// =======================================================
-// 🎀 KARTU TREATMENT
-// =======================================================
+//  KARTU TREATMENT
 class TreatmentCard extends StatelessWidget {
   final Map<String, dynamic> data; // Info Treatment
   final VoidCallback onDetail; // Fungsi buka detail

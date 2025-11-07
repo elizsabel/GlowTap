@@ -139,7 +139,7 @@ class _AkunPageState extends State<AkunPage> {
                       ///  Tombol Logout
                       _menuButton(
                         icon: Icons.logout_outlined,
-                        label: "Logout",
+                        label: "Keluar",
                         onTap: () async {
                           await PreferenceHandler.clearSession(); // hapus session login
 

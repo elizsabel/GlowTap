@@ -36,7 +36,7 @@ class BookingConfirmPage extends StatelessWidget {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Text(
-          "Pesanan berhasil dibuat ✨ Beautician akan menghubungi kamu 💗",
+          "Pesanan berhasil dibuat ✨ Admin akan menghubungi kamu 💗",
         ),
       ),
     );
