@@ -54,6 +54,7 @@ class _ChatpageState extends State<Chatpage> {
         title: Text(
           "Customer Service",
           style: TextStyle(
+            color: Colors.white,
             fontFamily: 'Poppins',
             fontWeight: FontWeight.bold,
             fontSize: 20,
