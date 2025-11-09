@@ -19,7 +19,7 @@ class _BottomNavPageState extends State<BottomNavPage> {
   final List<Widget> pages = [
     HomePage(),
     HistoryPage(),
-    EdukasiPage(),
+    EducationPage(),
     AkunPage(),
   ];
 

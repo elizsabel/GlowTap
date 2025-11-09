@@ -1,15 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:glowtap/glowtap/constant/appcolor.dart';
+import 'package:glowtap/glowtap/preferences/preference_handler.dart';
+import 'package:glowtap/glowtap/views/education/educationdatapage.dart';
 
-class EdukasiDetailPage extends StatelessWidget {
-  final String title;
-  final String content;
+class EducationDetailPage extends StatefulWidget {
+  final EducationItem item;
+  const EducationDetailPage({super.key, required this.item});
 
-  const EdukasiDetailPage({
-    super.key,
-    required this.title,
-    required this.content,
-  });
+  @override
+  State<EducationDetailPage> createState() => _EducationDetailPageState();
+}
+
+class _EducationDetailPageState extends State<EducationDetailPage> {
+  bool isSaved = false;
+
+  @override
+  void initState() {
+    super.initState();
+    checkSaved();
+  }
+
+  void checkSaved() async {
+    isSaved = await PreferenceHandler.isFavoriteEducation(widget.item.title);
+    setState(() {});
+  }
+
+  void toggleSave() async {
+    await PreferenceHandler.toggleFavoriteEducation(widget.item.title);
+    checkSaved();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -17,21 +36,17 @@ class EdukasiDetailPage extends StatelessWidget {
       backgroundColor: Appcolor.softPinkPastel,
       appBar: AppBar(
         backgroundColor: Appcolor.button1,
-        title: Text(title, style: const TextStyle(color: Colors.white)),
-        centerTitle: true,
+        actions: [
+          IconButton(
+            icon: Icon(isSaved ? Icons.bookmark : Icons.bookmark_border, color: Colors.white),
+            onPressed: toggleSave,
+          )
+        ],
       ),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Text(
-            content,
-            style: TextStyle(
-              color: Appcolor.textBrownSoft,
-              fontSize: 16,
-              height: 1.55,
-            ),
-          ),
-        ),
+      body: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Text(widget.item.content,
+            style: TextStyle(fontSize: 15, color: Appcolor.textBrownSoft, height: 1.5)),
       ),
     );
   }

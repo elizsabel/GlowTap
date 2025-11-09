@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:glowtap/glowtap/constant/appcolor.dart';
-import 'package:glowtap/glowtap/views/booking/bookingpage.dart';
+import 'package:glowtap/glowtap/views/booking/doctorpickerpage.dart';
 
 class DetailTreatmentPage extends StatelessWidget {
   final Map<String, dynamic> data;
@@ -158,7 +158,7 @@ class DetailTreatmentPage extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (_) => Bookingpage(
+                    builder: (_) => DoctorPickerPage(
                       treatmentName: data["title"],
                       treatmentPrice: data["price"],
                     ),

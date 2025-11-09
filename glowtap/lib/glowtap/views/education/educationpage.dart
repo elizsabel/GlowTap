@@ -1,100 +1,120 @@
 import 'package:flutter/material.dart';
 import 'package:glowtap/glowtap/constant/appcolor.dart';
+import 'package:glowtap/glowtap/views/education/educationdatapage.dart';
 import 'package:glowtap/glowtap/views/education/educationdetailpage.dart';
+import 'package:glowtap/glowtap/views/education/favoriteeducationpage.dart';
 
-class EdukasiPage extends StatelessWidget {
-  const EdukasiPage({super.key});
+class EducationPage extends StatefulWidget {
+  const EducationPage({super.key});
 
-  final List<Map<String, String>> edukasiList = const [
-    {
-      
-      "title": "Tips Menjaga Skin Barier Tetap Kuat?",
-      "content":
-          "Skin barrier adalah pelindung utama kulit. Kalau rusak, kulit akan mudah kusam, kering, dan muncul jerawat."
-          "Cara memperbaiki & menjaganya:"
-          "1. Gunakan pembersih wajah yang lembut dan hindari sabun keras."
-          "2. Rutin pakai pelembap yang mengandung ceramide dan hyaluronic acid."
-          "3. Selalu aplikasikan sunscreen setiap hari, minimal SPF 30.",
-    },
-    {
-      "title": "Manfaat DNA Salmon",
-      "content":
-          "DNA Salmon membantu regenerasi sel kulit, memperbaiki tekstur, dan membuat kulit glowing.",
-    },
-    {
-      "title": "Perawatan Setelah Treatment",
-      "content":
-          "Setelah treatment, hindari make up berat, sunscreen wajib, dan jangan sentuh area suntikan...",
-    },
+  @override
+  State<EducationPage> createState() => _EducationPageState();
+}
+
+class _EducationPageState extends State<EducationPage> {
+  String selectedCategory = "Semua";
+  String searchQuery = "";
+
+  List<String> categories = [
+    "Semua",
+    "Basic Skincare",
+    "After Treatment",
+    "Skin Problems",
+    "Lifestyle",
+    "Myth vs Fact",
   ];
 
   @override
   Widget build(BuildContext context) {
+    final filtered = educationList.where((e) {
+      final matchCategory = selectedCategory == "Semua" || e.category == selectedCategory;
+      final matchSearch = e.title.toLowerCase().contains(searchQuery.toLowerCase());
+      return matchCategory && matchSearch;
+    }).toList();
+
     return Scaffold(
       backgroundColor: Appcolor.softPinkPastel,
       appBar: AppBar(
         backgroundColor: Appcolor.button1,
-        centerTitle: true,
-        title: const Text(
-          "Edukasi Perawatan ✨",
-          style: TextStyle(color: Colors.white),
-        ),
+        title: const Text("Edukasi & Tips ✨", style: TextStyle(color: Colors.white)),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.bookmark, color: Colors.white),
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const FavoriteEducationPage()),
+            ),
+          )
+        ],
       ),
-      body: ListView.builder(
+
+      body: Padding(
         padding: const EdgeInsets.all(16),
-        itemCount: edukasiList.length,
-        itemBuilder: (context, index) {
-          final item = edukasiList[index];
-          return InkWell(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => EdukasiDetailPage(
-                    title: item["title"]!,
-                    content: item["content"]!,
-                  ),
-                ),
-              );
-            },
-            child: Container(
-              height: 150,
-              padding: const EdgeInsets.all(16),
-              margin: const EdgeInsets.only(bottom: 14),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(18),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black12.withOpacity(.06),
-                    blurRadius: 6,
-                    offset: const Offset(0, 3),
-                  ),
-                ],
-              ),
-              child: Row(
-                children: [
-                  Icon(
-                    Icons.menu_book_rounded,
-                    color: Appcolor.button1,
-                    size: 28,
-                  ),
-                  const SizedBox(width: 14),
-                  Expanded(
-                    child: Text(
-                      item["title"]!,
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                        color: Appcolor.textBrownSoft,
-                      ),
-                    ),
-                  ),
-                ],
+        child: Column(
+          children: [
+            // SEARCH
+            TextField(
+              onChanged: (v) => setState(() => searchQuery = v),
+              decoration: InputDecoration(
+                hintText: "Cari tips, contoh: sunscreen...",
+                filled: true,
+                fillColor: Colors.white,
+                prefixIcon: const Icon(Icons.search),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
               ),
             ),
-          );
-        },
+            const SizedBox(height: 16),
+
+            // CATEGORY TABS
+            SizedBox(
+              height: 36,
+              child: ListView(
+                scrollDirection: Axis.horizontal,
+                children: categories.map((cat) {
+                  final active = selectedCategory == cat;
+                  return GestureDetector(
+                    onTap: () => setState(() => selectedCategory = cat),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                      margin: const EdgeInsets.only(right: 8),
+                      decoration: BoxDecoration(
+                        color: active ? Appcolor.button1 : Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Text(cat, style: TextStyle(color: active ? Colors.white : Appcolor.textBrownSoft)),
+                    ),
+                  );
+                }).toList(),
+              ),
+            ),
+
+            const SizedBox(height: 16),
+
+            // LIST
+            Expanded(
+              child: ListView.builder(
+                itemCount: filtered.length,
+                itemBuilder: (_, i) {
+                  final item = filtered[i];
+                  return InkWell(
+                    onTap: () => Navigator.push(context,
+                        MaterialPageRoute(builder: (_) => EducationDetailPage(item: item))),
+                    child: Container(
+                      padding: const EdgeInsets.all(16),
+                      margin: const EdgeInsets.only(bottom: 12),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                      child: Text(item.title,
+                          style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: Appcolor.textBrownSoft)),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

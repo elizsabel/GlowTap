@@ -139,6 +139,8 @@ class SkinResultPage extends StatelessWidget {
                     builder: (_) => Bookingpage(
                       treatmentName: result["recommend"]!,
                       treatmentPrice: result["price"]!,
+                      doctorName:  result["doctor"]!,
+                      doctorPhone: result["phone"]!,
                     ),
                   ),
                 );

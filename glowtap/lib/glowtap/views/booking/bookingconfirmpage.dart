@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:glowtap/glowtap/constant/appcolor.dart';
 import 'package:glowtap/glowtap/database/db_helper.dart';
+import 'package:glowtap/glowtap/views/home/homepage.dart';
+import 'package:glowtap/navigation/bottompage.dart'; // ✅ Import HomePage
 
 class BookingConfirmPage extends StatelessWidget {
   final String treatmentName;
@@ -9,6 +11,9 @@ class BookingConfirmPage extends StatelessWidget {
   final String selectedTime;
   final String address;
   final String note;
+  final String doctorName;
+  final String doctorPhone;
+  final String customerPhone; // ✅ Tambahan
 
   const BookingConfirmPage({
     super.key,
@@ -18,30 +23,39 @@ class BookingConfirmPage extends StatelessWidget {
     required this.selectedTime,
     required this.address,
     required this.note,
+    required this.doctorName,
+    required this.doctorPhone,
+    required this.customerPhone,
   });
 
   Future<void> _saveBooking(BuildContext context) async {
     await DbHelper.addHistory(
       treatment: treatmentName,
-      date: "$selectedDate • $selectedTime",
+      doctor: doctorName,
+      doctorPhone: doctorPhone,
+      customerPhone: customerPhone, // ✅ Disimpan ke History
+      date: selectedDate,
       time: selectedTime,
       price: treatmentPrice,
       address: address,
       note: note,
-      status: "Dijadwalkan", // STATUS DEFAULT
+      status: "Dijadwalkan",
     );
 
     if (!context.mounted) return;
 
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
-        content: Text(
-          "Pesanan berhasil dibuat ✨ Admin akan menghubungi kamu 💗",
-        ),
+        content: Text("Pesanan berhasil dibuat ✨ Dokter akan menghubungi kamu 💗"),
       ),
     );
 
-    Navigator.popUntil(context, (route) => route.isFirst);
+    // ✅ Kembali langsung ke HomePage Customer
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (_) => const BottomNavPage()),
+      (route) => false,
+    );
   }
 
   @override
@@ -56,13 +70,14 @@ class BookingConfirmPage extends StatelessWidget {
           style: TextStyle(color: Colors.white),
         ),
       ),
-
       body: Padding(
         padding: const EdgeInsets.all(24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _infoBox("Treatment", treatmentName),
+            const SizedBox(height: 14),
+            _infoBox("Dokter", doctorName),
             const SizedBox(height: 14),
             _infoBox("Harga", treatmentPrice),
             const SizedBox(height: 14),
