@@ -12,7 +12,7 @@ class EditProfilPage extends StatefulWidget {
 }
 
 class _EditProfilPageState extends State<EditProfilPage> {
-  CustomerModel? user;
+  UserModel? user;
 
   final nameC = TextEditingController();
   final phoneC = TextEditingController();
@@ -40,7 +40,7 @@ class _EditProfilPageState extends State<EditProfilPage> {
   void saveProfile() async {
     if (user == null) return;
 
-    final updated = CustomerModel(
+    final updated = UserModel(
       id: user!.id,
       username: user!.username,
       name: nameC.text.trim(),

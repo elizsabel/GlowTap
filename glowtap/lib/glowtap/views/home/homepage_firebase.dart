@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:glowtap/glowtap/constant/appcolor.dart';
-import 'package:glowtap/glowtap/model/customermodelpage.dart';
-import 'package:glowtap/glowtap/views/booking/detailtreatmentpage.dart';
-import 'package:glowtap/glowtap/views/journal/journalfirebasepage.dart';
-import 'package:glowtap/glowtap/views/journal/journalpage.dart';
-import 'package:glowtap/glowtap/views/analyzer/skinanalyzer.dart';
-import 'package:glowtap/glowtap/preferences/preference_handler.dart';
+import 'package:glowtap/glowtap/model/userfirebasemodelpage.dart';
+import 'package:glowtap/glowtap/preferences/preference_handler_firebase.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+import 'package:glowtap/glowtap/views/booking/detailtreatmentpage.dart';
+import 'package:glowtap/glowtap/views/analyzer/skinanalyzer.dart';
+import 'package:glowtap/glowtap/views/journal/journalfirebasepage.dart';
+
+class HomePageFirebase extends StatefulWidget {
+  const HomePageFirebase({super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<HomePageFirebase> createState() => _HomePageFirebaseState();
 }
 
-class _HomePageState extends State<HomePage> {
-  UserModel? user;
+class _HomePageFirebaseState extends State<HomePageFirebase> {
+  UserFirebaseModel? user; // ← Firebase model
 
   @override
   void initState() {
@@ -24,7 +24,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void loadUser() async {
-    user = await PreferenceHandler.getUser();
+    user = await PreferenceHandlerFirebase.getUserFirebase();
     if (mounted) setState(() {});
   }
 
@@ -34,8 +34,7 @@ class _HomePageState extends State<HomePage> {
       "title": "DNA Salmon Injection",
       "description": "Regenerasi kulit untuk wajah kenyal & cerah",
       "detail":
-          "DNA Salmon Injection adalah treatment regenerasi kulit yang menggunakan ekstrak DNA ikan salmon yang kaya polinukleotida. "
-          "Membantu memperbaiki jaringan kulit, meningkatkan kolagen, memperbaiki tekstur, dan mengatasi bekas jerawat.",
+          "DNA Salmon Injection adalah treatment regenerasi kulit yang menggunakan ekstrak DNA ikan salmon...",
       "price": "Rp 850.000",
     },
     {
@@ -43,7 +42,7 @@ class _HomePageState extends State<HomePage> {
       "title": "Profhilo Skin Booster",
       "description": "Hidrasi mendalam yang bikin glowing maksimal",
       "detail":
-          "Profhilo adalah skin booster premium dengan Hyaluronic Acid konsentrasi tinggi — hidrasi, tightening, dan glass skin effect.",
+          "Profhilo adalah skin booster premium dengan Hyaluronic Acid...",
       "price": "Rp 3.200.000",
     },
     {
@@ -51,7 +50,7 @@ class _HomePageState extends State<HomePage> {
       "title": "Rejuran Healing",
       "description": "Memperbaiki tekstur kulit & barrier",
       "detail":
-          "Rejuran menggunakan PN dari DNA salmon, membantu regenerasi kulit, memperbaiki pori, dan mengurangi redness.",
+          "Rejuran menggunakan PN dari DNA salmon, membantu regenerasi kulit...",
       "price": "Rp 1.950.000",
     },
     {
@@ -59,7 +58,7 @@ class _HomePageState extends State<HomePage> {
       "title": "Botox Anti-Wrinkle",
       "description": "Kurangi garis halus & kerutan",
       "detail":
-          "Botox merilekskan otot wajah sehingga garis ekspresi berkurang namun tetap terlihat natural.",
+          "Botox merilekskan otot wajah sehingga garis ekspresi berkurang...",
       "price": "Rp 1.200.000 / area",
     },
   ];
@@ -109,7 +108,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                   const SizedBox(height: 6),
                   Text(
-                    "Hai, ${user!.name} ✨",
+                    "Hai, ${user!.name ?? "GlowTap User"} ✨",
                     style: const TextStyle(
                       fontSize: 24,
                       color: Colors.white,
@@ -156,7 +155,7 @@ class _HomePageState extends State<HomePage> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => const JournalFirebasePage(),
+                            builder: (_) => JournalFirebasePage(),
                           ),
                         );
                       },

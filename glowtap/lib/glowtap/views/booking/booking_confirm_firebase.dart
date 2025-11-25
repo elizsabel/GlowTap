@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:glowtap/glowtap/constant/appcolor.dart';
-import 'package:glowtap/glowtap/database/db_helper.dart';
-import 'package:glowtap/navigation/bottompage.dart';
+import 'package:glowtap/glowtap/model/historyfirebasemodel.dart';
+import 'package:glowtap/glowtap/preferences/preference_handler_firebase.dart';
+import 'package:glowtap/glowtap/service/history_firebase.dart';
+import 'package:glowtap/navigation/bottomnavfirebase.dart';
 
-class BookingConfirmPage extends StatelessWidget {
+class BookingConfirm_FirebasePage extends StatelessWidget {
   final String treatmentName;
   final String treatmentPrice;
   final String selectedDate;
@@ -12,7 +14,7 @@ class BookingConfirmPage extends StatelessWidget {
   final String note;
   final String customerPhone;
 
-  const BookingConfirmPage({
+  const BookingConfirm_FirebasePage({
     super.key,
     required this.treatmentName,
     required this.treatmentPrice,
@@ -23,14 +25,22 @@ class BookingConfirmPage extends StatelessWidget {
     required this.customerPhone,
   });
 
-  // ==========================================
-  // SIMPAN KE HISTORY
-  // ==========================================
   Future<void> _saveBooking(BuildContext context) async {
-    await DbHelper.addHistory(
+    // ambil UID dari token
+    final uid = await PreferenceHandlerFirebase.getToken();
+    if (uid == null || uid.isEmpty) {
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("User tidak ditemukan, silakan login ulang")),
+      );
+      return;
+    }
+
+    final model = HistoryFirebaseModel(
+      uid: uid,
       treatment: treatmentName,
-      doctor: "GlowTap", // <─ otomatis
-      doctorPhone: "-", // <─ tidak ada dokter
+      doctor: "GlowTap",
+      doctorPhone: "-", // belum pakai dokter per user
       customerPhone: customerPhone,
       date: selectedDate,
       time: selectedTime,
@@ -39,6 +49,8 @@ class BookingConfirmPage extends StatelessWidget {
       note: note,
       status: "Dijadwalkan",
     );
+
+    await HistoryFirebaseService.addBooking(model);
 
     if (!context.mounted) return;
 
@@ -52,14 +64,11 @@ class BookingConfirmPage extends StatelessWidget {
 
     Navigator.pushAndRemoveUntil(
       context,
-      MaterialPageRoute(builder: (_) => const BottomNavPage()),
+      MaterialPageRoute(builder: (_) => const BottomNavFirebase()),
       (route) => false,
     );
   }
 
-  // ==========================================
-  // UI
-  // ==========================================
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -79,22 +88,16 @@ class BookingConfirmPage extends StatelessWidget {
           children: [
             _infoBox("Treatment", treatmentName),
             const SizedBox(height: 14),
-
             _infoBox("Harga", treatmentPrice),
             const SizedBox(height: 14),
-
             _infoBox("Tanggal & Waktu", "$selectedDate • $selectedTime"),
             const SizedBox(height: 14),
-
             _infoBox("Alamat", address),
             const SizedBox(height: 14),
-
             if (note.isNotEmpty) _infoBox("Catatan", note),
             const SizedBox(height: 14),
-
             _infoBox("Metode Pembayaran", "COD (Bayar di tempat)"),
             const Spacer(),
-
             ElevatedButton(
               onPressed: () => _saveBooking(context),
               style: ElevatedButton.styleFrom(

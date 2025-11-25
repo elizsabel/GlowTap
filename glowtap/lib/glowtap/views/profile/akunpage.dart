@@ -14,7 +14,7 @@ class AkunPage extends StatefulWidget {
 
 class _AkunPageState extends State<AkunPage> {
   ///  Mengambil data user yang sedang login dari SharedPreferences
-  Future<CustomerModel?> _getUser() async {
+  Future<UserModel?> _getUser() async {
     return await PreferenceHandler.getUser();
   }
 
@@ -37,7 +37,7 @@ class _AkunPageState extends State<AkunPage> {
       ),
 
       ///  FutureBuilder digunakan karena data user diambil secara async
-      body: FutureBuilder<CustomerModel?>(
+      body: FutureBuilder<UserModel?>(
         future: _getUser(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {

@@ -1,20 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:glowtap/glowtap/constant/appcolor.dart';
-import 'package:glowtap/glowtap/database/db_helper.dart';
-import 'package:glowtap/glowtap/model/customermodelpage.dart';
+import 'package:glowtap/glowtap/service/firebase.dart';
+import 'package:glowtap/glowtap/preferences/preference_handler_firebase.dart';
 
-class RegisterCustglow extends StatefulWidget {
-  const RegisterCustglow({super.key});
+class RegisterCustFirebase extends StatefulWidget {
+  const RegisterCustFirebase({super.key});
   static const id = "/registercust";
 
   @override
-  State<RegisterCustglow> createState() => _RegisterCustGlowState();
+  State<RegisterCustFirebase> createState() => _RegisterCustFirebaseState();
 }
 
-class _RegisterCustGlowState extends State<RegisterCustglow> {
-  // Controller untuk input pengguna
-  final TextEditingController usernameC = TextEditingController();
+class _RegisterCustFirebaseState extends State<RegisterCustFirebase> {
   final TextEditingController nameC = TextEditingController();
   final TextEditingController phoneC = TextEditingController();
   final TextEditingController emailC = TextEditingController();
@@ -62,23 +60,9 @@ class _RegisterCustGlowState extends State<RegisterCustglow> {
                     ),
                   ),
                   const SizedBox(height: 12),
-                  Text(
-                    "Isi data dengan benar ya 💗",
-                    style: TextStyle(color: Appcolor.textBrownSoft),
-                  ),
-
+                  Text("Isi data dengan benar ya 💗",
+                      style: TextStyle(color: Appcolor.textBrownSoft)),
                   const SizedBox(height: 22),
-
-                  // USERNAME
-                  buildTitle("Username"),
-                  buildTextField(
-                    hintText: "Buat username unik",
-                    icon: Icons.account_circle_outlined,
-                    controller: usernameC,
-                    validator: (v) =>
-                        v!.isEmpty ? "Username tidak boleh kosong" : null,
-                  ),
-                  const SizedBox(height: 14),
 
                   // NAMA
                   buildTitle("Nama Lengkap"),
@@ -159,35 +143,67 @@ class _RegisterCustGlowState extends State<RegisterCustglow> {
     );
   }
 
-  /// ===================== REGISTER LOGIC =====================
+  /// ===================== REGISTER LOGIC FINAL =====================
   void registerUser() async {
     if (_formKey.currentState!.validate()) {
-      final user = UserModel(
-        username: usernameC.text.trim(),
-        name: nameC.text.trim(),
-        email: emailC.text.trim(),
-        phone: phoneC.text.trim(),
-        password: passC.text.trim(),
-      );
+      try {
+        // 1. REGISTER
+        final user = await FirebaseSevice.registerUser(
+          name: nameC.text.trim(),
+          email: emailC.text.trim(),
+          phone: phoneC.text.trim(),
+          password: passC.text.trim(),
+        );
 
-      await DbHelper.registerUser(user);
+        // 2. AUTO LOGIN
+        final loginUser = await FirebaseSevice.loginUser(
+          email: emailC.text.trim(),
+          password: passC.text.trim(),
+        );
 
-      Fluttertoast.showToast(msg: "Pendaftaran berhasil 💗");
-      Navigator.pop(context);
+        if (loginUser == null) {
+          Fluttertoast.showToast(msg: "Gagal login setelah register");
+          return;
+        }
+
+        // 3. SAVE STATUS LOGIN
+        await PreferenceHandlerFirebase.saveLogin(true);
+
+        // 4. SAVE USER DATA
+        await PreferenceHandlerFirebase.saveUserFirebase(loginUser);
+
+        // 5. SAVE TOKEN
+        final token =
+            await FirebaseSevice.auth.currentUser?.getIdToken();
+        if (token != null) {
+          await PreferenceHandlerFirebase.saveToken(token);
+        }
+
+        Fluttertoast.showToast(msg: "Pendaftaran Berhasil 💗");
+
+        // 6. PINDAH KE BERANDA FIREBASE
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          "/bottomFirebase",
+          (route) => false,
+        );
+      } catch (e) {
+        Fluttertoast.showToast(msg: "Gagal mendaftar: $e");
+      }
     }
   }
 
   /// ===================== WIDGET REUSABLE =====================
   Widget buildTitle(String text) => Align(
-    alignment: Alignment.centerLeft,
-    child: Text(
-      text,
-      style: TextStyle(
-        fontWeight: FontWeight.w600,
-        color: Appcolor.textBrownSoft,
-      ),
-    ),
-  );
+        alignment: Alignment.centerLeft,
+        child: Text(
+          text,
+          style: TextStyle(
+            fontWeight: FontWeight.w600,
+            color: Appcolor.textBrownSoft,
+          ),
+        ),
+      );
 
   TextFormField buildTextField({
     required String hintText,

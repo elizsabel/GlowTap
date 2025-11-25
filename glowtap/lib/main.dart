@@ -1,16 +1,20 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:glowtap/firebase_options.dart';
+import 'package:glowtap/glowtap/splash/splashfirebase_page.dart';
 import 'package:glowtap/glowtap/splash/splashscreenpage.dart';
+import 'package:glowtap/glowtap/views/auth/register_firebase_page.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:firebase_core/firebase_core.dart';
-
-
-
+import 'package:firebase_auth/firebase_auth.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-   await initializeDateFormatting('id_ID', null);
-   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await initializeDateFormatting('id_ID', null);
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await FirebaseAuth.instance.setSettings(
+    appVerificationDisabledForTesting: true,
+  );
   runApp(const MyApp());
 }
 
@@ -45,7 +49,7 @@ class MyApp extends StatelessWidget {
         // tested with just a hot reload.
         // colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: const SplashGlowTap(),
+      home: const SplashFirebase(),
     );
   }
 }

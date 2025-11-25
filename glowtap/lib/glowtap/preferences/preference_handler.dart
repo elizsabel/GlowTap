@@ -21,19 +21,19 @@ class PreferenceHandler {
   }
 
   // Simpan data customer
-  static Future<void> saveUser(CustomerModel user) async {
+  static Future<void> saveUser(UserModel user) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(userKey, user.toJson());
   }
 
   // Ambil data customer
-  static Future<CustomerModel?> getUser() async {
+  static Future<UserModel?> getUser() async {
     final prefs = await SharedPreferences.getInstance();
     final raw = prefs.getString(userKey);
 
     if (raw == null) return null;
 
-    return CustomerModel.fromJson(raw);
+    return UserModel.fromJson(raw);
   }
 
   // Hapus data customer

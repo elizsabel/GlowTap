@@ -66,7 +66,7 @@ class DbHelper {
   // CUSTOMER
   // =====================================================
 
-  static Future<void> registerUser(CustomerModel user) async {
+  static Future<void> registerUser(UserModel user) async {
     final dbs = await db();
     await dbs.insert(
       tableCustomer,
@@ -75,7 +75,7 @@ class DbHelper {
     );
   }
 
-  static Future<CustomerModel?> loginUser({
+  static Future<UserModel?> loginUser({
     required String email,
     required String password,
   }) async {
@@ -87,12 +87,12 @@ class DbHelper {
     );
 
     if (result.isNotEmpty) {
-      return CustomerModel.fromMap(result.first);
+      return UserModel.fromMap(result.first);
     }
     return null;
   }
 
-  static Future<void> updateCustomer(CustomerModel customer) async {
+  static Future<void> updateCustomer(UserModel customer) async {
     final dbs = await db();
     await dbs.update(
       tableCustomer,

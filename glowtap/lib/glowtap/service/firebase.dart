@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:glowtap/glowtap/model/user_firebase_model.dart';
+import 'package:glowtap/glowtap/model/userfirebasemodelpage.dart';
+import 'package:glowtap/glowtap/preferences/preference_handler.dart';
+import 'package:glowtap/glowtap/preferences/preference_handler_firebase.dart';
 
 class FirebaseSevice {
   static final FirebaseAuth auth = FirebaseAuth.instance;
@@ -41,6 +43,17 @@ class FirebaseSevice {
     if (user == null) return null;
     final snap = await firestore.collection('users').doc(user.uid).get();
     if (!snap.exists) return null;
-    return UserFirebaseModel.fromMap({'uid': user.uid, ...snap.data()!});
+
+    // Model lengkap dari Firestore
+    final model = UserFirebaseModel.fromMap({'uid': user.uid, ...snap.data()!});
+
+    await PreferenceHandlerFirebase.saveToken(user.uid);
+    await PreferenceHandlerFirebase.saveUserFirebase(model);
+    await PreferenceHandlerFirebase.saveLogin(true);
+
+    return model;
+
+    // print(user.uid);
+    // return UserFirebaseModel.fromMap({'uid': user.uid, ...snap.data()!});
   }
 }

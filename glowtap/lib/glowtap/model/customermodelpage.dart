@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-class CustomerModel {
+class UserModel {
   int? id;
   String username;
   String name;
@@ -8,7 +8,7 @@ class CustomerModel {
   String phone;
   String password;
 
-  CustomerModel({
+  UserModel({
     this.id,
     required this.username,
     required this.name,
@@ -28,8 +28,8 @@ class CustomerModel {
     };
   }
 
-  factory CustomerModel.fromMap(Map<String, dynamic> map) {
-    return CustomerModel(
+  factory UserModel.fromMap(Map<String, dynamic> map) {
+    return UserModel(
       id: map['id'],
       username: map['username'] ?? '', /// AMBIL DARI DATABASE
       name: map['name'],
@@ -41,6 +41,6 @@ class CustomerModel {
 
   String toJson() => json.encode(toMap());
 
-  factory CustomerModel.fromJson(String source) =>
-      CustomerModel.fromMap(json.decode(source));
+  factory UserModel.fromJson(String source) =>
+      UserModel.fromMap(json.decode(source));
 }
