@@ -5,6 +5,7 @@ import 'package:glowtap/glowtap/firebase/preference_firebase/preference_handler_
 import 'package:glowtap/glowtap/firebase/service/history_firebase.dart';
 import 'package:glowtap/glowtap/firebase/views/booking_firebase/booking_firebasepage.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class HistoryFirebasePage extends StatefulWidget {
   const HistoryFirebasePage({super.key});
@@ -23,9 +24,9 @@ class _HistoryFirebasePageState extends State<HistoryFirebasePage> {
   }
 
   Future<void> _loadUid() async {
-    final token = await PreferenceHandlerFirebase.getToken();
+    final user = await PreferenceHandlerFirebase.getToken();
     setState(() {
-      uid = token ?? "";
+      uid = user!;
     });
   }
 
@@ -33,7 +34,8 @@ class _HistoryFirebasePageState extends State<HistoryFirebasePage> {
   Future<void> chatAdmin(HistoryFirebaseModel item) async {
     final phone = "6289604091424";
 
-    final message = """
+    final message =
+        """
 Halo GlowTap 👋
 
 Saya ingin bertanya mengenai pesanan saya.
@@ -103,7 +105,6 @@ Mohon bantuannya ya 💗
         centerTitle: true,
       ),
 
-      // *** FIX DI SINI → GUNAKAN getHistory() BUKAN getBookingByUid() ***
       body: StreamBuilder<List<HistoryFirebaseModel>>(
         stream: HistoryFirebaseService.getHistory(uid),
 
@@ -116,6 +117,7 @@ Mohon bantuannya ya 💗
               ),
             );
           }
+          print(snapshot.data);
 
           if (!snapshot.hasData) {
             return const Center(
@@ -219,8 +221,7 @@ Mohon bantuannya ya 💗
                         ],
                       ),
 
-                    if (item.status == "Selesai" ||
-                        item.status == "Dibatalkan")
+                    if (item.status == "Selesai" || item.status == "Dibatalkan")
                       ElevatedButton(
                         onPressed: () => deleteBooking(item),
                         style: ElevatedButton.styleFrom(

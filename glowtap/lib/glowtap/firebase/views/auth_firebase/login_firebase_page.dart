@@ -28,38 +28,39 @@ class _LoginCustFirebaseState extends State<LoginCustFirebase> {
     );
   }
 
-  // ================= LOGIN LOGIC FINAL =================
+  // LOGIN
   void login() async {
-  try {
-    final user = await FirebaseService.loginUser(
-      email: emailController.text.trim(),
-      password: passwordController.text.trim(),
-    );
+    try {
+      final user = await FirebaseService.loginUser(
+        email: emailController.text.trim(),
+        password: passwordController.text.trim(),
+      );
 
-    if (user == null) {
-      Fluttertoast.showToast(msg: "Akun tidak ditemukan");
-      return;
+      if (user == null) {
+        Fluttertoast.showToast(msg: "Akun tidak ditemukan");
+        return;
+      }
+
+      // SIMPAN SESSION LOGIN
+      await PreferenceHandlerFirebase.saveLogin(true);
+      await PreferenceHandlerFirebase.saveUserFirebase(user);
+
+      final token = await FirebaseService.auth.currentUser?.uid;
+      // print(token);
+      if (token != null) {
+        await PreferenceHandlerFirebase.saveToken(token);
+      }
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const BottomNavFirebase()),
+      );
+    } catch (e) {
+      Fluttertoast.showToast(msg: "Login gagal: $e");
     }
-
-    // SIMPAN SESSION LOGIN
-    await PreferenceHandlerFirebase.saveLogin(true);
-    await PreferenceHandlerFirebase.saveUserFirebase(user);
-
-    final token = await FirebaseService.auth.currentUser?.getIdToken();
-    if (token != null) {
-      await PreferenceHandlerFirebase.saveToken(token);
-    }
-
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (_) => const BottomNavFirebase()),
-    );
-  } catch (e) {
-    Fluttertoast.showToast(msg: "Login gagal: $e");
   }
-}
 
-  // ====================== UI ======================
+  //  UI
   SafeArea buildLoginForm() {
     return SafeArea(
       child: Form(
@@ -128,21 +129,21 @@ class _LoginCustFirebaseState extends State<LoginCustFirebase> {
                     return null;
                   },
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: 30),
 
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: TextButton(
-                    onPressed: () {},
-                    child: Text(
-                      "Lupa Password?",
-                      style: TextStyle(
-                        color: Appcolor.rosegoldDark,
-                        fontSize: 12,
-                      ),
-                    ),
-                  ),
-                ),
+                // Align(
+                //   alignment: Alignment.centerRight,
+                //   child: TextButton(
+                //     onPressed: () {},
+                //     child: Text(
+                //       "Lupa Password?",
+                //       style: TextStyle(
+                //         color: Appcolor.rosegoldDark,
+                //         fontSize: 12,
+                //       ),
+                //     ),
+                //   ),
+                // ),
 
                 // LOGIN BUTTON
                 LoginButton(text: "Masuk", onPressed: login),
@@ -219,7 +220,7 @@ class _LoginCustFirebaseState extends State<LoginCustFirebase> {
   }
 }
 
-// ====================== LOGIN BUTTON ======================
+// LOGIN BUTTON
 class LoginButton extends StatelessWidget {
   final void Function()? onPressed;
   final String text;

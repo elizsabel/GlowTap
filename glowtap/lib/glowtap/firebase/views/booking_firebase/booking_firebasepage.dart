@@ -80,7 +80,7 @@ class _BookingFirebasePageState extends State<BookingFirebasePage> {
     );
   }
 
-  // ===================== FIELD BUILDER =====================
+  // FIELD BUILDER 
   Widget inputField(String label, TextEditingController c, {int maxLines = 1}) {
     String hint = label == "Alamat Lengkap"
         ? "Contoh:\n"
@@ -205,7 +205,7 @@ class _BookingFirebasePageState extends State<BookingFirebasePage> {
 
             const SizedBox(height: 28),
 
-            // ===================== DITUKAR DI SINI =====================
+            
             inputField("Catatan (Opsional)", catatanC, maxLines: 1),
             const SizedBox(height: 16),
             inputField("Alamat Lengkap", alamatC, maxLines: 4),

@@ -3,8 +3,6 @@ import 'package:glowtap/glowtap/firebase/constant/appcolor.dart';
 import 'package:glowtap/glowtap/firebase/models_firebase/educationmodel.dart';
 import 'package:glowtap/glowtap/firebase/service/education_service.dart';
 import 'package:glowtap/glowtap/firebase/views/education_fb/education_detailfirebase_page.dart';
-import 'package:glowtap/glowtap/sql/views/education/educationdetailpage.dart';
-import 'package:glowtap/glowtap/firebase/views/education_fb/favoriteeducationpage.dart';
 
 class EducationFirebasePage extends StatefulWidget {
   const EducationFirebasePage({super.key});
@@ -35,9 +33,9 @@ class _EducationFirebasePageState extends State<EducationFirebasePage> {
     loadData();
   }
 
-  /// ================================
-  /// LOAD DATA DARI FIREBASE
-  /// ================================
+  
+  // LOAD DATA DARI FIREBASE
+ 
   Future<void> loadData() async {
     setState(() => isLoading = true);
 
@@ -70,23 +68,23 @@ class _EducationFirebasePageState extends State<EducationFirebasePage> {
           style: TextStyle(color: Colors.white),
         ),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.bookmark, color: Colors.white),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => const FavoriteEducationPage(),
-                ),
-              );
-            },
-          ),
+          // IconButton(
+          //   icon: const Icon(Icons.bookmark, color: Colors.white),
+          //   onPressed: () {
+          //     // Navigator.push(
+          //     //   context,
+          //     //   MaterialPageRoute(
+          //     //     builder: (_) => const FavoriteEducationPage(),
+          //     //   ),
+          //     // );
+          //   },
+          // ),
         ],
       ),
 
-      /// ============================
-      /// BODY
-      /// ============================
+      
+      // BODY
+ 
       body: isLoading
           ? const Center(child: CircularProgressIndicator(color: Colors.pink))
           : Padding(

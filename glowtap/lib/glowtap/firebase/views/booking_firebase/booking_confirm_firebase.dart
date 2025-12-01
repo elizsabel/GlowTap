@@ -1,9 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:glowtap/glowtap/firebase/constant/appcolor.dart';
 import 'package:glowtap/glowtap/firebase/models_firebase/historyfirebasemodel.dart';
-import 'package:glowtap/glowtap/firebase/preference_firebase/preference_handler_firebase.dart';
 import 'package:glowtap/glowtap/firebase/service/history_firebase.dart';
 import 'package:glowtap/glowtap/firebase/nav_firebase/bottomnavfirebase.dart';
+
 
 class BookingConfirmFirebasePage extends StatelessWidget {
   final String treatmentName;
@@ -28,19 +29,14 @@ class BookingConfirmFirebasePage extends StatelessWidget {
   Future<void> _saveBooking(BuildContext context) async {
     print("=== SAVE BOOKING TERPANGGIL ===");
 
-    final uid = await PreferenceHandlerFirebase.getToken();
+    final uid = FirebaseAuth.instance.currentUser!.uid;
+
 
     print("UID: $uid");
     print("DATE: $selectedDate");
     print("TIME: $selectedTime");
     print("ADDRESS: $address");
 
-    if (uid == null) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text("User tidak ditemukan 😢")));
-      return;
-    }
 
     final isoDate =
         "${selectedDate.split('/')[2]}-${selectedDate.split('/')[1]}-${selectedDate.split('/')[0]}";

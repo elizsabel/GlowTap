@@ -28,7 +28,7 @@ class _RegisterCustFirebaseState extends State<RegisterCustFirebase> {
     );
   }
 
-  /// ===================== UI FORM =====================
+  // UI FORM
   SafeArea buildFormLayer() {
     return SafeArea(
       child: Form(
@@ -61,7 +61,7 @@ class _RegisterCustFirebaseState extends State<RegisterCustFirebase> {
                   ),
                   const SizedBox(height: 12),
                   Text(
-                    "Isi data dengan benar ya 💗",
+                    "Isi data dengan benar ya ",
                     style: TextStyle(color: Appcolor.textBrownSoft),
                   ),
                   const SizedBox(height: 22),
@@ -145,11 +145,11 @@ class _RegisterCustFirebaseState extends State<RegisterCustFirebase> {
     );
   }
 
-  /// ===================== REGISTER LOGIC FINAL =====================
+  // REGISTER 
    void registerUser() async {
   if (_formKey.currentState!.validate()) {
     try {
-      // REGISTER → SIMPAN DI FIREBASE
+      
       await FirebaseService.registerUser(
         name: nameC.text.trim(),
         email: emailC.text.trim(),
@@ -159,7 +159,7 @@ class _RegisterCustFirebaseState extends State<RegisterCustFirebase> {
 
       Fluttertoast.showToast(msg: "Pendaftaran Berhasil 💗");
 
-      // Setelah register → langsung ke halaman login
+      
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (_) => const LoginCustFirebase()),
@@ -171,7 +171,7 @@ class _RegisterCustFirebaseState extends State<RegisterCustFirebase> {
   }
 }
 
-  /// ===================== REUSABLE =====================
+  // REUSABLE
   Widget buildTitle(String text) => Align(
     alignment: Alignment.centerLeft,
     child: Text(
@@ -225,7 +225,7 @@ class _RegisterCustFirebaseState extends State<RegisterCustFirebase> {
   }
 }
 
-/// ===================== BUTTON =====================
+// BUTTON 
 class RegisterButton extends StatelessWidget {
   final void Function()? onPressed;
   final String text;

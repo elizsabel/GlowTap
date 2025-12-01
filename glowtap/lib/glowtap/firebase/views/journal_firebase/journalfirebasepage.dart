@@ -168,7 +168,7 @@ class _JournalFirebasePageState extends State<JournalFirebasePage> {
 
   @override
   Widget build(BuildContext context) {
-    // Kalau UID belum kebaca → loading dulu
+    
     if (uid.isEmpty) {
       return Scaffold(
         backgroundColor: Appcolor.softPinkPastel,
